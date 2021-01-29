@@ -1,0 +1,23 @@
+{
+    "BOT": {
+        "TOKEN": "",
+        "VERISON": "0.0.0",
+        "PREFIX": ".",
+        "COOLDOWN": 3,
+        "OWNER": "",
+        "DEVELOPER": "232163746829697025"
+    },
+    
+    "MYSQL": {
+        "HOST": "jarcopanel.ferox.host",
+        "USER": "",
+        "PASSWORD": "",
+        "DATABASE": ""
+    },
+
+    "COLOR": {
+        "DEFAULT": "ffdb00",
+        "GREEN": "00ff00",
+        "RED": "ff0000"
+    }
+}
