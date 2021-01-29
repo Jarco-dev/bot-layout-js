@@ -3,6 +3,7 @@ const Guilds = require("../../database/models/Guilds");
 const GuildConfigs = require("../../database/models/GuildConfigs");
 const StateManager = require("../../database/StateManager");
 const register = require("../../utils/register");
+const config = require("../../config/config.json");
 
 module.exports = class ReadyEvent extends BaseEvent {
     constructor() {
