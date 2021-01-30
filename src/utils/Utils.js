@@ -49,7 +49,7 @@ module.exports = class Utils {
                     let possChannelId = (/<#(\d{17,19})>/).exec((possChannel));
                     possChannelId = (possChannelId) ? possChannelId[1] : possChannel;
                     let channel;
-                    if((/(\d{17,19})/).test(possChannelId)) channel = await message.channel.guild.channels.resolve(possChannelId).catch(err => { });
+                    if((/(\d{17,19})/).test(possChannelId)) channel = await message.channel.guild.channels.resolve(possChannelId);
                     if(channel) channels.push(channel);
                 }
                 console.log(channels);
