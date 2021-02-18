@@ -21,7 +21,7 @@ module.exports = class InfoCommand extends BaseCommand {
     async run(message, args) {
         // get all the information needed to create the embed
         const uptime = this.utils.toTime(this.client.uptime);
-        const users =  await client.guilds.cache.reduce((amount, guild) => amount + guild.memberCount, 0);
+        const users =  await this.client.guilds.cache.reduce((amount, guild) => amount + guild.memberCount, 0);
         const channels = this.client.channels.cache.size;
         const guilds = this.client.guilds.cache.size;
         const usedMemory = (process.memoryUsage().heapUsed/1024/1024).toFixed(1);
