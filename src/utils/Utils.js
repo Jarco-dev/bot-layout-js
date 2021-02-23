@@ -56,7 +56,7 @@ module.exports = class Utils {
                 if(channels[0]) return channels;
                 break;
             default:
-                console.log(`[Utils, argumentHandler] "${type}" is not a valid type.\n[Utils, argumentHandler] Input type: ${message.content}`);
+                throw new Error("type is not defined");
         }
     }
 
@@ -99,5 +99,27 @@ module.exports = class Utils {
 		   result += characters.charAt(Math.floor(Math.random() * charactersLength));
 		}
 		return result;
-	 }		
+	}
+    
+    /**
+    * @param {Channel} channel The channel object of wich to check the permissions
+    * @param {Array} perms The array of permissions to check for
+    * @param {Object} notifChan The channel to notify missing permissions in
+    * @returns if notifChan is set it will return a boolean if not then it will return the following object {hasPerm: boolean, missingPerms: string}
+    */
+   static async hasPermsInChannel(channel, perms, notifChan) {
+    if(!channel) throw new Error("channel is undefined");
+    if(!perms) return new Error("perms is undefined");
+    const botMember = await channel.guild.members.fetch(client.user.id);
+    const missingPerms = botMember.permissionsIn(channel).missing(perms);
+    if(missingPerms.length > 0) {
+        let list = []
+        missingPerms.forEach(perm => list.push(`\`${perm}\``));
+        if(!notifChan) return {hasPerms: false, missingPerms: list.join(", ")};
+        notifChan.send(`❌ **|** I am missing the following permission please grant me these if you want to use this feature\n       **|** ${list.join(", ")}`);
+        return false;
+    }
+    if(!notifChan) return {hasPerms: true, missingPerms: ""};
+    else return true;
+}
 }
