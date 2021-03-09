@@ -52,7 +52,6 @@ module.exports = class Utils {
                     if((/(\d{17,19})/).test(possChannelId)) channel = await message.channel.guild.channels.resolve(possChannelId);
                     if(channel) channels.push(channel);
                 }
-                console.log(channels);
                 if(channels[0]) return channels;
                 break;
             default:
