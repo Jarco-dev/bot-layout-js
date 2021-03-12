@@ -33,18 +33,14 @@ module.exports = class TestCommand extends BaseCommand {
         // set the cmdPrefix with a max length of 10 characters
         if(args[0].length > 10) return message.channel.send("❌ **|** The prefix must be 10 characters or less");
         try {
-            await GuildConfigs.update({cmdPrefix: args[0]}, {
-                where: {
-                    guildId: guild.id
-                }
-            });
+            await GuildConfigs.update({cmdPrefix: args[0]}, {where: {guildId: guild.id}});
             StateManager.emit("cmdPrefixUpdate", guild.id, args[0]);
             message.channel.send(`The prefix for **${guild.name}** has been updated to: \`${args[0]}\``);
         }
         catch(err) {
             console.log(err);
-            const devTag = this.client.users.cache.get(this.config.USERS.JARCO);
-            return message.channel.send(`❌ **|** An error occured if this keeps happening please contact my dev \`${devTag}\``);
+            const devTag = this.client.users.cache.get(this.config.BOT.DEVELOPER);
+            return message.channel.send(`❌ **|** An error occured if this keeps happening please contact my dev \`${devTag.tag}\``);
         }
     }
 }
