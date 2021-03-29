@@ -10,7 +10,11 @@ module.exports = class Utils {
      */
     static embed() {
         const { MessageEmbed } = require('discord.js');
-        return new MessageEmbed();
+        const embed = new MessageEmbed()
+            .setColor(config.COLOR.DEFAULT)
+            .setFooter("Bot coded by Jarco#0001")
+            .setTimestamp();
+        return embed;
     }
 
     /**
@@ -99,26 +103,73 @@ module.exports = class Utils {
 		}
 		return result;
 	}
-    
+
     /**
     * @param {Channel} channel The channel object of wich to check the permissions
     * @param {Array} perms The array of permissions to check for
+    * @param {String} neededFor the string of where the permission is needed for
     * @param {Object} notifChan The channel to notify missing permissions in
     * @returns if notifChan is set it will return a boolean if not then it will return the following object {hasPerm: boolean, missingPerms: string}
     */
-   static async hasPermsInChannel(channel, perms, notifChan) {
-    if(!channel) throw new Error("channel is undefined");
-    if(!perms) return new Error("perms is undefined");
-    const botMember = await channel.guild.members.fetch(client.user.id);
-    const missingPerms = botMember.permissionsIn(channel).missing(perms);
-    if(missingPerms.length > 0) {
-        let list = []
-        missingPerms.forEach(perm => list.push(`\`${perm}\``));
-        if(!notifChan) return {hasPerms: false, missingPerms: list.join(", ")};
-        notifChan.send(`❌ **|** I am missing the following permission please grant me these if you want to use this feature\n       **|** ${list.join(", ")}`);
-        return false;
+    static async hasPermsInChannel(channel, perms, neededFor, notifChan) {
+        if(!channel) throw new Error("No channel specified");
+        if(channel.type == "dm") throw new Error("Can't check permissions in a dm channel");
+        if(!perms || perms.length == 0) return new Error("No perms to check given");
+
+        const botMember = (channel.guild.me) ? channel.guild.me : await channel.guild.members.fetch(client.user.id);
+        const roleOnlyPerms = new Discord.Permissions(["ADMINISTRATOR","KICK_MEMBERS","BAN_MEMBERS","MANAGE_GUILD","VIEW_AUDIT_LOG","VIEW_GUILD_INSIGHTS","CHANGE_NICKNAME","MANAGE_NICKNAMES","MANAGE_ROLES","MANAGE_EMOJIS"]);
+        const missingPerms = botMember.permissionsIn(channel).add(botMember.permissions & roleOnlyPerms).missing(perms);
+        
+        if(missingPerms.length > 0) {
+            const missingPermsList = [];
+            missingPerms.forEach(permission => missingPermsList.push(`\`${permission}\``));
+            if(!notifChan) return {hasPerms: false, missingPerms: missingPermsList.join(", ")};
+            const isMultiple = (missingPerms.length > 1) ? true : false;
+            if(notifChan.guild && botMember.permissionsIn(notifChan).has("VIEW_CHANNEL") && botMember.permissionsIn(notifChan).has("SEND_MESSAGES")) {
+                notifChan.send(`⚠  **|** I am missing ${(isMultiple) ? "permissions" : "a permission"} in ${channel} to ${neededFor}\n        **|** If you wish to be able to use it please reinvite me or give me the following permission${(isMultiple) ? "s" : ""}\n        **|** Permission${(isMultiple) ? "s" : ""} ${missingPermsList.join(", ")}`);
+            }
+            else {
+                let dmChan;
+                if(notifChan.guild) channel = await notifChan.client.users.fetch(notifChan.guild.ownerID);
+                else dmChan = notifChan;
+                dmChan.send(`⚠  **|** I am missing ${(isMultiple) ? "permissions" : "a permission"} to ${neededFor} in:\n        **|** \`Guild:\` **${channel.guild.name}** \`Channel:\` ${channel}\n        **|** If you wish to be able to use it please reinvite me or give me the following permission${(isMultiple) ? "s" : ""}\n        **|** Permission${(isMultiple) ? "s" : ""}: ${missingPermsList.join(", ")}`)
+            }
+            return false;
+        }
+
+        if(!notifChan) return {hasPerms: true, missingPerms: ""};
+        else return true;
     }
-    if(!notifChan) return {hasPerms: true, missingPerms: ""};
-    else return true;
-}
+
+    /**
+    * @param {Array} roles the list of roles objects that need to be editable by the client
+    * @param {String} neededFor the string of where the permission is needed for
+    * @param {Object} notifChan The channel to notify the missing permissions in
+    * @returns if notifChan is set it will return a boolean if not then it will return the following object {hasPerm: boolean, missingPerms: (object | null)}
+    */
+    static async hasPermsToEditRoles(roles, neededFor, notifChan) {
+        if(!roles || roles.length == 0) throw new Error("No roles given");
+        if(notifChan && !["dm","text"].includes(notifChan.type)) throw new Error("notifChan is a invalid channel type");
+
+        roles = roles.filter(role => role.editable == false).sort((a, b) => b.position-a.position);
+
+        if(roles[0]) {
+            if(!notifChan) return {hasPerms: false, putRoleAbove: roles[0]};
+            const botMember = (roles[0].guild.me) ? roles[0].guild.me : await roles[0].guild.members.fetch(client.user.id);
+            if(notifChan.type == "text" && botMember.permissionsIn(notifChan).has("VIEW_CHANNEL") && botMember.permissionsIn(notifChan).has("SEND_MESSAGES")) {
+                notifChan.send(`⚠  **|** I am too low in the role hierarchy to ${neededFor}\n        **|** If you wish to be able to use it then please move my role above the **${roles[0].name}** role`);
+            }
+            else {
+                let channel;
+                if(notifChan.guild) channel = await client.users.fetch(notifChan.guild.ownerID);
+                else channel = notifChan;
+                channel.send(`⚠  **|** I am too low in the role hierarchy to ${neededFor} in:\n        **|** \`Guild:\` **${notifChan.guild.name}**\n        **|** If you wish to be able to use it then please move my role above the **${roles[0].name}** role`)
+            }
+            return false;
+        }
+        
+        if(!notifChan) return {hasPerms: true, putRoleAbove: null};
+        return true;
+    }
+
 }

@@ -6,7 +6,7 @@ class StateManager extends EventEmitter {
     constructor() {
         super();
         this.connection = new Sequelize(mysql.DATABASE, mysql.USER, mysql.PASSWORD, {
-            logging: console.log,
+            logging: false,
             dialect: "mysql",
             host: mysql.HOST
         });

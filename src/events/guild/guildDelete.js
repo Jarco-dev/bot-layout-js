@@ -7,6 +7,7 @@ module.exports = class GuildDeleteEvent extends BaseEvent {
     }
 
     run(guild) {
+        // process event
         Guilds.destroy({where: {guildId: guild.id}});
     }
 }

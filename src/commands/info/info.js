@@ -19,7 +19,7 @@ module.exports = class InfoCommand extends BaseCommand {
     }
 
     async run(message, args) {
-        // get all the information needed to create the embed
+        // process command
         const uptime = this.utils.toTime(this.client.uptime);
         const users =  await this.client.guilds.cache.reduce((amount, guild) => amount + guild.memberCount, 0);
         const channels = this.client.channels.cache.size;
@@ -28,7 +28,6 @@ module.exports = class InfoCommand extends BaseCommand {
         const devTag = (await this.client.users.fetch(this.config.BOT.DEVELOPER)).tag;
         const cmdPrefix = (message.channel.guild) ? guildCmdPrefixes.get(message.channel.guild.id) : this.config.BOT.PREFIX;
 
-        // create and send the embed
         const embed = this.utils.embed()
             .setColor(this.config.COLOR.DEFAULT)
             .setTimestamp()

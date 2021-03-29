@@ -19,7 +19,7 @@ module.exports = class TestCommand extends BaseCommand {
         })
     }
     async run(message, args) {
-        // message is not in dm's
+        // check permissions
         if(!message.channel.guild) return message.channel.send(`The prefix in my dm's is: \`${this.config.BOT.PREFIX}\``);
 
         // with out arguments return the default prefix

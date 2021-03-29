@@ -16,7 +16,7 @@ module.exports = class DestroyCommand extends BaseCommand {
     }
 
     async run(message, args) {
-        // return if the author isn't the bot owner
+        // check permissions
         if(message.author.id !== this.config.BOT.OWNER) return message.channel.send("❌ **|** You don't have the permission to use this command.");
 
         // return if there is already a confirmation awaiting a reply

@@ -15,6 +15,8 @@ module.exports = class MessageEvent extends BaseEvent {
     }
 
     run(message) {
+        // process event
+        
         // author is not from a bot
         if (message.author.bot) return;
         

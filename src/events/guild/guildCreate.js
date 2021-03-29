@@ -9,6 +9,7 @@ module.exports = class GuildCreateEvent extends BaseEvent {
     }
 
     run(guild) {
+        // process event
         try {
             Guilds.create({guildId: guild.id});
             GuildConfigs.create({guildId: guild.id});
