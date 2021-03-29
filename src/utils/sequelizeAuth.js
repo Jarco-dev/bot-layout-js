@@ -14,14 +14,20 @@ module.exports = async () => {
             // initialise the models
             const files = await fs.readdir("./src/database/models");
             for (const file of files) {
-                if(!file.endsWith(".js")) return;
-                const model = require(`../database/models/${file}`);
-                await model.init(StateManager.connection);
+                try {
+                    if(!file.endsWith(".js")) return;
+                    const model = require(`../database/models/${file}`);
+                    await model.init(StateManager.connection)
+                }
+                catch(err) {
+                    await console.log(`[DATABASE] Failed to initialise file ${file}\n\n`, err);
+                    process.exit();
+                }
             }
 
         })
         .catch(async err => {
-            await console.log("[DATABASE] Failed to connect\n", err);
+            await console.log("[DATABASE] Failed to connect\n\n", err);
             process.exit();
         });
 }
