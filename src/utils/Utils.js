@@ -1,3 +1,5 @@
+const config = require("../config/config.json");
+
 /**
  * Usefull commonly used utilities.
  */
