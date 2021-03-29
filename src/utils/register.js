@@ -13,11 +13,10 @@ async function features(client) {
             if(file.endsWith(".js")) {
                 const feature = require(path.join(filePath, file));
                 try {
-                    feature(client);
+                    feature.run(client);
                 }
                 catch(err) {
-                    console.log(`Error while loading: ${file}`)
-                    console.log(err);
+                    console.log(`[FEATURES] Error while loading: ${file}\n\n`, err);
                 }
             }
         }
@@ -44,7 +43,7 @@ async function commands(client) {
                         if(cmd.aliases.length !==0) cmd.aliases.forEach(alias => client.commands.set(alias, cmd));
                     }
                     catch(err) {
-                        console.log(err);
+                        console.log(`[COMMANDS] Error while loading: ${file}\n\n`, err);
                     }
                 }
             }
@@ -70,7 +69,7 @@ async function events(client) {
                         client.on(event.name, event.run.bind(event));
                     }
                     catch(err) {
-                        console.log(err);
+                        console.log(`[EVENTS] Error while loading: ${file}\n\n`, err);
                     }
                 }
             }

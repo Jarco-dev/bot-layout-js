@@ -1,4 +1,4 @@
-module.exports = (client) => {
+module.exports.run = (client) => {
     updatePresence();
     setInterval(() => updatePresence(), 10000)
 
