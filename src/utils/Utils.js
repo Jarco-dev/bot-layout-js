@@ -118,7 +118,7 @@ module.exports = class Utils {
         if(channel.type == "dm") throw new Error("Can't check permissions in a dm channel");
         if(!perms || perms.length == 0) return new Error("No perms to check given");
 
-        const botMember = (channel.guild.me) ? channel.guild.me : await channel.guild.members.fetch(client.user.id);
+        const botMember = (channel.guild.me) ? channel.guild.me : await channel.guild.members.fetch(this.client.user.id);
         const roleOnlyPerms = new Discord.Permissions(["ADMINISTRATOR","KICK_MEMBERS","BAN_MEMBERS","MANAGE_GUILD","VIEW_AUDIT_LOG","VIEW_GUILD_INSIGHTS","CHANGE_NICKNAME","MANAGE_NICKNAMES","MANAGE_ROLES","MANAGE_EMOJIS"]);
         const missingPerms = botMember.permissionsIn(channel).add(botMember.permissions & roleOnlyPerms).missing(perms);
         
@@ -134,7 +134,7 @@ module.exports = class Utils {
                 let dmChan;
                 if(notifChan.guild) channel = await notifChan.client.users.fetch(notifChan.guild.ownerID);
                 else dmChan = notifChan;
-                dmChan.send(`⚠  **|** I am missing ${(isMultiple) ? "permissions" : "a permission"} to ${neededFor} in:\n        **|** \`Guild:\` **${channel.guild.name}** \`Channel:\` ${channel}\n        **|** If you wish to be able to use it please reinvite me or give me the following permission${(isMultiple) ? "s" : ""}\n        **|** Permission${(isMultiple) ? "s" : ""}: ${missingPermsList.join(", ")}`)
+                dmChan.send(`⚠  **|** I am missing ${(isMultiple) ? "permissions" : "a permission"} to ${neededFor}${(channel.guild) ? ` in:\n        **|** \`Guild:\` **${channel.guild.name}** \`Channel:\` ${channel}` : ""}\n        **|** If you wish to be able to use it please reinvite me or give me the following permission${(isMultiple) ? "s" : ""}\n        **|** Permission${(isMultiple) ? "s" : ""}: ${missingPermsList.join(", ")}`)
             }
             return false;
         }
@@ -157,15 +157,15 @@ module.exports = class Utils {
 
         if(roles[0]) {
             if(!notifChan) return {hasPerms: false, putRoleAbove: roles[0]};
-            const botMember = (roles[0].guild.me) ? roles[0].guild.me : await roles[0].guild.members.fetch(client.user.id);
+            const botMember = (roles[0].guild.me) ? roles[0].guild.me : await roles[0].guild.members.fetch(this.client.user.id);
             if(notifChan.type == "text" && botMember.permissionsIn(notifChan).has("VIEW_CHANNEL") && botMember.permissionsIn(notifChan).has("SEND_MESSAGES")) {
                 notifChan.send(`⚠  **|** I am too low in the role hierarchy to ${neededFor}\n        **|** If you wish to be able to use it then please move my role above the **${roles[0].name}** role`);
             }
             else {
                 let channel;
-                if(notifChan.guild) channel = await client.users.fetch(notifChan.guild.ownerID);
+                if(notifChan.guild) channel = await this.client.users.fetch(notifChan.guild.ownerID);
                 else channel = notifChan;
-                channel.send(`⚠  **|** I am too low in the role hierarchy to ${neededFor} in:\n        **|** \`Guild:\` **${notifChan.guild.name}**\n        **|** If you wish to be able to use it then please move my role above the **${roles[0].name}** role`)
+                channel.send(`⚠  **|** I am too low in the role hierarchy to ${neededFor}${(channel.guild) ? ` in:\n        **|** \`Guild:\` **${notifChan.guild.name}**` : ""}\n        **|** If you wish to be able to use it then please move my role above the **${roles[0].name}** role`)
             }
             return false;
         }
