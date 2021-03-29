@@ -42,7 +42,7 @@ module.exports = class HelpCommand extends BaseCommand {
         else {
             // is a valid command
             const command = this.client.commands.get(args[0].toLowerCase());
-            if (!command) return message.channel.send("❌ **|** That's not a valid command!");
+            if (!command) return message.channel.send("❌  **|** That's not a valid command!");
 
             // turn arrays into help embed layout
             const aliases = [];

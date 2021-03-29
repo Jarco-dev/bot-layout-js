@@ -17,12 +17,12 @@ module.exports = class DestroyCommand extends BaseCommand {
 
     async run(message, args) {
         // check permissions
-        if(message.author.id !== this.config.BOT.OWNER) return message.channel.send("❌ **|** You don't have the permission to use this command.");
+        if(message.author.id !== this.config.BOT.OWNER) return message.channel.send("❌  **|** You don't have the permission to use this command.");
 
         // return if there is already a confirmation awaiting a reply
         const timeLeft = this.runningConfirmations.get(message.author.id) - Date.now();
         if(Date.now() < this.runningConfirmations.get(message.author.id)) {
-            return message.author.send(`❌ **|** You already have a open confirmation action!\nThis action will expire in: ${(timeLeft / 1000).toFixed(1)}s`)
+            return message.author.send(`❌  **|** You already have a open confirmation action!\nThis action will expire in: ${(timeLeft / 1000).toFixed(1)}s`)
                 .then(r => r.delete({ timeout: timeLeft })).catch(err => {});
         }
 

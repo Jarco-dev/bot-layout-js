@@ -28,10 +28,10 @@ module.exports = class TestCommand extends BaseCommand {
         if(args.length === 0) return message.channel.send(`The prefix for **${guild.name}** is: \`${cmdPrefix}\``);
 
         // user has administration permissions
-        if(!message.member.hasPermission("ADMINISTRATOR")) return message.channel.send("❌ **|** You don't have the permission to use this command");
+        if(!message.member.hasPermission("ADMINISTRATOR")) return message.channel.send("❌  **|** You don't have the permission to use this command");
 
         // set the cmdPrefix with a max length of 10 characters
-        if(args[0].length > 10) return message.channel.send("❌ **|** The prefix must be 10 characters or less");
+        if(args[0].length > 10) return message.channel.send("❌  **|** The prefix must be 10 characters or less");
         try {
             await GuildConfigs.update({cmdPrefix: args[0]}, {where: {guildId: guild.id}});
             StateManager.emit("cmdPrefixUpdate", guild.id, args[0]);
@@ -40,7 +40,7 @@ module.exports = class TestCommand extends BaseCommand {
         catch(err) {
             console.log(err);
             const devTag = this.client.users.cache.get(this.config.BOT.DEVELOPER);
-            return message.channel.send(`❌ **|** An error occured if this keeps happening please contact my dev \`${devTag.tag}\``);
+            return message.channel.send(`❌  **|** An error occured if this keeps happening please contact my dev \`${devTag.tag}\``);
         }
     }
 }
