@@ -16,8 +16,8 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable("Guilds", {
       guildId: {
-          type: DataTypes.STRING(18),
-          primaryKey: true
+        type: DataTypes.STRING(18),
+        primaryKey: true
       }
     });
 
@@ -27,8 +27,8 @@ module.exports = {
         primaryKey: true,
         forgeignkey: true,
         references: {
-            model: "Guilds",
-            key: "guildId",
+          model: "Guilds",
+          key: "guildId",
         },
         onDelete: "CASCADE",
         onUpdate: "CASCADE"
@@ -47,7 +47,7 @@ module.exports = {
    * @returns
    */
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("Guilds");
     await queryInterface.dropTable("GuildConfigs");
+    await queryInterface.dropTable("Guilds");
   }
 };
