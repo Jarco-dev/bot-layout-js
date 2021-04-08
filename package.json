@@ -8,8 +8,7 @@
     "dev-start": "nodemon ./src/app.js"
   },
   "keywords": [],
-  "author": "Jarco Kers",
-  "license": "ISC",
+  "author": "Jarco-dev",
   "dependencies": {
     "discord.js": "^12.5.1",
     "mysql2": "^2.2.5",
