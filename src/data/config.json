@@ -1,7 +1,6 @@
 {
     "clientOptions": {
         "messageEditHistoryMaxSize": 0,
-        "test": "hello",
         "disableMentions": "everyone",
         "ws": {
             "intents": [
