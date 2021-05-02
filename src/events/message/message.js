@@ -1,86 +1,106 @@
+const { Message } = require("discord.js");
 const BaseEvent = require("../../utils/structures/BaseEvent");
-const config = require("../../config/config.json");
-const { Collection } = require("discord.js");
-const StateManager = require("../../database/StateManager");
-const cooldowns = new Collection();
 
-// command prefix tracking
-guildCmdPrefixes = new Map();
-StateManager.on("cmdPrefixFetched", (guildId, cmdPrefix) => guildCmdPrefixes.set(guildId, cmdPrefix));
-StateManager.on("cmdPrefixUpdate", (guildId, cmdPrefix) => guildCmdPrefixes.set(guildId, cmdPrefix));
+/**
+ * @typedef {import("discord.js").Message} Message
+ */
 
-module.exports = class MessageEvent extends BaseEvent {
+class MessageEvent extends BaseEvent {
     constructor() {
-        super("message")
+        super("message");
+
+        /** @private */
+        this.logger = this.client.logger;
+
+        /** @private */
+        this.commands = this.client.commandLoader.commands;
+
+        /** @private */
+        this.commandAliases = this.client.commandLoader.commandAliases;
+
+        /** @private */
+        this.cooldown = this.client.cooldown;
     }
 
-    run(message) {
-        // process event
-        
-        // author is not from a bot
-        if (message.author.bot) return;
-        
-        // set the prefix depending on wether you're in a guild or in dm's
-        let prefix;
-        if(message.channel.type !== "dm") prefix = guildCmdPrefixes.get(message.channel.guild.id);
-        else prefix = config.BOT.PREFIX;
+    /**
+     * Run the event
+     * @param {Message} msg - The discord message object
+     */
+    async run(msg) {
+        if (msg.author.bot) return;
 
-        // starts with the guilds prefix
-        if (!message.content.startsWith(prefix) && !message.content.startsWith(`<@!${this.client.user.id}>`) && !message.content.startsWith(`<@${this.client.user.id}>`)) return;
-
-        // get the args and command name
-        if(message.content.startsWith(`${prefix} `)) prefix = `${prefix} `
-        else if(message.content.startsWith(`<@${this.client.user.id}>`)) prefix = `<@${this.client.user.id}> `
-        else if(message.content.startsWith(`<@!${this.client.user.id}>`)) prefix = `<@!${this.client.user.id}> `
-
-        const args = message.content.slice(prefix.length).split(/\s+/);
-        if(args[0] === prefix) args.shift();
-        const cmdName = args.shift().toLowerCase();
-
-        // is a valid command
-        const command = this.client.commands.get(cmdName);
-        if (command) {
-            if (!botHasPermission(command, message)) return;
-            if (command.cooldown > 0) if (isOnCooldown(command, message)) return;
-            command.run(message, args);
+        // Check for the prefix
+        if (!msg.guild && msg.content.startsWith(this.config.prefix)) {
+            var prefix = this.config.prefix;
+        } else if (msg.content.startsWith(await msg.guild.fetchPrefix())) {
+            var prefix = msg.guild.prefix;
+        } else if (msg.content.startsWith(`<@!${this.client.user.id}>`)) {
+            var prefix = `<@!${this.client.user.id}>`;
+        } else {
+            return;
         }
 
-        // processes the command cooldown
-        function isOnCooldown(command, message) {
-            if (!cooldowns.has(command.name)) cooldowns.set(command.name, new Collection());
-            const now = Date.now();
-            const timestamps = cooldowns.get(command.name);
-            const cooldownAmount = command.cooldown * 1000;
-            if (timestamps.has(message.author.id)) {
-                const expirationTime = timestamps.get(message.author.id) + cooldownAmount;
-                if (now < expirationTime) {
-                    const timeLeftInMs = expirationTime - now;
-                    const timeLeft = (expirationTime - now) / 1000;
-                    message.channel.send(`⏱ | **${message.author.username}**! Please wait ${timeLeft.toFixed(1)}s and try again!`)
-                        .then(r => r.delete({ timeout: timeLeftInMs }))
-                        .catch(err => { });
-                    return true;
+        // Prepare the args and prefix parameter
+        msg.args = msg.content.slice(prefix.length).trim().split(/\s+/);
+
+        // Run the command tests
+        const commandName = msg.args.shift().toLowerCase();
+        let command = this.commands[commandName];
+        if (!command) {
+            command = this.commands[this.commandAliases[commandName]];
+            if (!command) return;
+        }
+
+        if (msg.guild) {
+            const channelPerms = msg.channel.permissionsFor(this.client.user.id);
+            msg.prefix = msg.guild.prefix;
+
+            // deleteMsg
+            if (command.deleteMsg) {
+                if (channelPerms.has("VIEW_CHANNEL") && channelPerms.has("MANAGE_MESSAGES")) {
+                    msg.delete().catch(err => { });
                 }
             }
-            else {
-                timestamps.set(message.author.id, now);
-                setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
-                return false;
+
+            // permissions
+            for (let i in command.permissions) {
+                if (!channelPerms.has(command.permissions[i])) {
+                    if (channelPerms.has("VIEW_CHANNEL") && channelPerms.has("SEND_MESSAGES")) {
+                        this.sender.error(msg, `The bot doesn't have the ${this.permissions[i]} permission! Please reinvite the bot, or contact your server admin!`, 4000);
+                        return;
+                    }
+                }
+            }
+
+            // nsfw
+            if (command.nsfw && !msg.channel.nsfw) {
+                if (channelPerms.has("VIEW_CHANNEL") && channelPerms.has("SEND_MESSAGES")) {
+                    this.sender.invalid(msg, "This command can only be used in **nsfw** channels!", 4000);
+                    return;
+                }
+            }
+
+        } else {
+            msg.prefix = this.config.prefix;
+
+            // disableDm
+            if (command.disableDm) {
+                this.sender.error(msg, "This command is disabled in my dm's!", 4000);
+                return;
             }
         }
 
-        // checks wether the bot has the needed permissions
-        function botHasPermission(command, message) {
-            if(command.botPermissions.length === 0) return true;
-            if(message.channel.type == "dm") return true;
-            const bot = message.channel.guild.members.cache.get(command.client.user.id);
-            const missingPerms = bot.permissionsIn(message.channel).missing(command.botPermissions)
-            if(missingPerms.length === 0) return true;
-            const missingPermsFormatted = [];
-            missingPerms.forEach(permission => missingPermsFormatted.push(`\`${permission}\``));
-            const missingPermsList = missingPermsFormatted.join(", ");
-            message.reply(`I am missing ${(missingPerms.length > 1) ? "permissions" : "a permission"} to execute this command\nIf you wish to be able to use it please reinvite me or give me the following permission${(missingPerms.length > 1) ? "s" : ""}:\n${missingPermsList}`).catch(err => { });
-            return false;
+        // User isn't on cooldown
+        if (command.cooldown > 0 && this.cooldown.check(msg, command)) return;
+
+        // Run the command
+        try {
+            command.run(msg);
+        } catch (err) {
+            this.logger.error(err);
+            this.sender.error(msg, "An unexpected error occured, the command might have not worked fully!", 4000).catch();
         }
     }
 }
+
+module.exports = MessageEvent;

@@ -1,27 +1,19 @@
-const { DataTypes, Model} = require("sequelize");
+const { DataTypes, Model } = require("sequelize");
 
 module.exports = class GuildConfigs extends Model {
     static init(sequelize) {
         return super.init({
             guildId: {
-                type: DataTypes.STRING(10),
-                primaryKey: true,
-                forgeignkey: true,
-                references: {
-                    model: "Guilds",
-                    key: "guildId",
-                },
-                onDelete: "CASCADE",
-                onUpdate: "CASCADE"
+                type: DataTypes.STRING(18),
+                primaryKey: true
             },
-            cmdPrefix: {
-                type: DataTypes.STRING(10)
+            prefix: {
+                type: DataTypes.STRING(10),
+                allowNull: false
             }
         }, {
             timestamps: false,
-            tableName: "GuildConfigs",
             sequelize
-        })
-        
+        });
     }
 }

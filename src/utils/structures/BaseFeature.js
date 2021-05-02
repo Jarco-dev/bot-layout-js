@@ -1,14 +1,13 @@
 /**
- * BaseEvent
- * The class handeling all the event parameters
+ * BaseFeature
+ * The class handeling all the feature parameters
  */
-class BaseEvent {
+class BaseFeature {
     /**
      * Constructor
-     * @param {String} name - Name of the event
      */
     constructor(name) {
-        // Event parameters
+        // Feature parameters
         this.name = name;
 
         // Client parameters
@@ -23,4 +22,4 @@ class BaseEvent {
     }
 }
 
-module.exports = BaseEvent;
+module.exports = BaseFeature;

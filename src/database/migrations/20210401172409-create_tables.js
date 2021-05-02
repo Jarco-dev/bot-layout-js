@@ -14,31 +14,16 @@ module.exports = {
    * @returns
    */
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("Guilds", {
-      guildId: {
-        type: DataTypes.STRING(18),
-        primaryKey: true
-      }
-    });
-
     await queryInterface.createTable("GuildConfigs", {
       guildId: {
         type: DataTypes.STRING(18),
-        primaryKey: true,
-        forgeignkey: true,
-        references: {
-          model: "Guilds",
-          key: "guildId",
-        },
-        onDelete: "CASCADE",
-        onUpdate: "CASCADE"
+        primaryKey: true
       },
-      cmdPrefix: {
+      prefix: {
         type: DataTypes.STRING(10),
-        allowNull: true,
+        allowNull: false
       }
     });
-
   },
 
   /**
@@ -48,6 +33,5 @@ module.exports = {
    */
   down: async (queryInterface, Sequelize) => {
     await queryInterface.dropTable("GuildConfigs");
-    await queryInterface.dropTable("Guilds");
   }
 };

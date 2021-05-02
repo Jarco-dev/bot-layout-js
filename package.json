@@ -1,19 +1,19 @@
 {
-  "name": "insertnamehere",
-  "version": "1.0.0",
-  "description": "INSERT STATUS HERE",
-  "main": "app.js",
+  "name": "botlayout",
+  "version": "2.0.0",
+  "description": "A layout for discord bots",
+  "main": "index.js",
   "scripts": {
-    "start": "node ./src/app.js",
-    "dev-start": "nodemon ./src/app.js"
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
-  "keywords": [],
   "author": "Jarco-dev",
   "dependencies": {
-    "discord.js": "^12.5.1",
-    "mysql2": "^2.2.5",
-    "sequelize": "^6.3.5",
-    "sequelize-cli": "^6.2.0"
+    "discord.js": "12.x",
+    "moment": "2.x",
+    "mysql2": "2.x",
+    "sequelize": "6.x",
+    "sequelize-cli": "6.x"
   },
   "devDependencies": {
     "nodemon": "^2.0.6"
