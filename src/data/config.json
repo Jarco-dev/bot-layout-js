@@ -1,0 +1,42 @@
+{
+    "clientOptions": {
+        "messageEditHistoryMaxSize": 0,
+        "test": "hello",
+        "disableMentions": "everyone",
+        "ws": {
+            "intents": [
+                "GUILDS",
+                "GUILD_MEMBERS",
+                "GUILD_BANS",
+                "GUILD_EMOJIS",
+                "GUILD_INTEGRATIONS",
+                "GUILD_WEBHOOKS",
+                "GUILD_INVITES",
+                "GUILD_VOICE_STATES",
+                "GUILD_PRESENCES",
+                "GUILD_MESSAGES",
+                "GUILD_MESSAGE_REACTIONS",
+                "GUILD_MESSAGE_TYPING",
+                "DIRECT_MESSAGES",
+                "DIRECT_MESSAGE_REACTIONS",
+                "DIRECT_MESSAGE_TYPING"
+            ]
+        }
+    },
+
+    "prefix": ".",
+    "colors": {
+        "default": "ff4800",
+        "good": "00ff00",
+        "bad": "ff0000"
+    },
+    "emoji": {
+        "success": "✅",
+        "invalid": "❌",
+        "error": "⚠",
+        "time": "⏱",
+        "repeat": "🔁",
+        "heartbeat": "💟"
+    },
+    "debug": true
+}
