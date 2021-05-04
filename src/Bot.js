@@ -25,10 +25,10 @@ class Client extends Discord.Client {
         super(options);
 
         // secret
-        this.auth = require("../secret/auth.json");
+        this.auth = require("../secret/auth");
 
         // Bot configs
-        this.config = require("./data/config.json");
+        this.config = require("./data/config");
         this.version = require("../package.json").version;
         this.debug = this.config.debug;
 
@@ -67,4 +67,4 @@ class Client extends Discord.Client {
     }
 }
 
-module.exports = new Client((require("./data/config.json")).clientOptions);
+module.exports = new Client((require("./data/config")).clientOptions);
