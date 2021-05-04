@@ -3,6 +3,12 @@ const { MessageEmbed } = require("discord.js");
 /**
  * @typedef {import("../Bot")} Client
  * @typedef {import("discord.js").MessageEmbed} MessageEmbed
+ * @typedef {import("discord.js").Snowflake} Snowflake
+ * @typedef {import("discord.js").User} user
+ * @typedef {import("discord.js").Role} Role
+ * @typedef {import("discord.js").Channel} Channel
+ * @typedef {import("discord.js").Guild} Guild
+ * @typedef {import("discord.js").Message} Member
  */
 
 /**
@@ -42,6 +48,69 @@ class Global {
      */
     emptyEmbed() {
         return new MessageEmbed();
+    }
+
+    /**
+     * Fetch a user
+     * @param {Snowflake|UserMention} userId - The user you want to fetch
+     * @returns {User} 
+     */
+    async fetchUser(userId) {
+        if (!userId) return;
+        userId = userId.match(/[0-9]+/);
+        if (!userId) return;
+        userId = userId[0];
+        let user = await this.client.users.fetch(userId).catch(err => { });
+        return user;
+    }
+
+    /**
+     * Fetch a member from a guild
+     * @param {Guild} guild - The guild of the member
+     * @param {Snowflake|UserMention} userId - The id of the member you want to fetch
+     * @returns 
+     */
+    async fetchMember(guild, userId) {
+        if (!guild) throw new Error("no guild was provided");
+        if (!userId) return;
+        userId = userId.match(/[0-9]+/);
+        if (!userId) return;
+        userId = userId[0];
+        let member = await guild.members.fetch(userId);
+        return member;
+    }
+
+    /**
+     * Fetch a role from a guild
+     * @param {Guild} guild - The guild of the role
+     * @param {Snowflake|RoleMention} roleId - The role you want to fetch
+     * @returns {Role}
+     */
+    async fetchRole(guild, roleId) {
+        if (!guild) throw new Error("no guild was provided");
+        if (!roleId) return;
+        roleId = roleId.match(/[0-9]+/);
+        if (!roleId) return;
+        roleId = roleId[0];
+        console.log(roleId);
+        let role = await guild.roles.fetch(roleId);
+        return role;
+    }
+
+    /**
+     * Fetch a channel from a guild
+     * @param {Guild} guild - The guild of the channel
+     * @param {Snowflake} channelId - The channel you want to fetch
+     * @returns {Channel|ChannelMention}
+     */
+    fetchChannel(guild, channelId) {
+        if (!guild) throw new Error("no guild was provided");
+        if (!channelId) return;
+        channelId = channelId.match(/[0-9]+/);
+        if (!channelId) return;
+        channelId = channelId[0];
+        let channel = guild.channels.resolve(channelId);
+        return channel;
     }
 
     /**
