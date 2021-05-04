@@ -20,6 +20,8 @@ module.exports = {
         "heartbeat": "💟"
     },
 
+    debug: true,
+
     // Discord.js client options
     "clientOptions": {
         "messageEditHistoryMaxSize": 0,
