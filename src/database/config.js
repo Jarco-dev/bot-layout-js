@@ -1,4 +1,4 @@
-const auth = require("../../secret/auth.json");
+const auth = require("../../secret/auth.js");
 
 module.exports = {
     "username": auth.mysql_user,
