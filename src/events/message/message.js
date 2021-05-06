@@ -32,7 +32,7 @@ class MessageEvent extends BaseEvent {
         // Check for the prefix
         if (!msg.guild && msg.content.startsWith(this.config.prefix)) {
             var prefix = this.config.prefix;
-        } else if (msg.content.startsWith(await msg.guild.fetchPrefix())) {
+        } else if (msg.guild && msg.content.startsWith(await msg.guild.fetchPrefix())) {
             var prefix = msg.guild.prefix;
         } else if (msg.content.startsWith(`<@!${this.client.user.id}>`)) {
             var prefix = `<@!${this.client.user.id}>`;
