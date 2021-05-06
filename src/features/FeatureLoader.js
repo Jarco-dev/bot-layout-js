@@ -3,10 +3,6 @@ const fs = require("fs").promises;
 const path = require("path");
 
 /**
- * @typedef {import("../Bot")} Client
- */
-
-/**
  * FeatureLoader
  * The class for loading and unloading features
  */
@@ -82,3 +78,7 @@ class CommandLoader {
 }
 
 module.exports = CommandLoader;
+
+/**
+ * @typedef {import("../Bot")} Client
+ */

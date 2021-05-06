@@ -1,15 +1,4 @@
-const { MessageEmbed } = require("discord.js");
-
-/**
- * @typedef {import("../Bot")} Client
- * @typedef {import("discord.js").MessageEmbed} MessageEmbed
- * @typedef {import("discord.js").Snowflake} Snowflake
- * @typedef {import("discord.js").User} user
- * @typedef {import("discord.js").Role} Role
- * @typedef {import("discord.js").Channel} Channel
- * @typedef {import("discord.js").Guild} Guild
- * @typedef {import("discord.js").Message} Member
- */
+const Discord = require("discord.js");
 
 /**
  * Global
@@ -47,7 +36,7 @@ class Global {
      * @returns {MessageEmbed}
      */
     emptyEmbed() {
-        return new MessageEmbed();
+        return new Discord.MessageEmbed();
     }
 
     /**
@@ -141,3 +130,14 @@ class Global {
 }
 
 module.exports = Global;
+
+/**
+ * @typedef {import("../Bot")} Client
+ * @typedef {import("discord.js").User} user
+ * @typedef {import("discord.js").Role} Role
+ * @typedef {import("discord.js").Guild} Guild
+ * @typedef {import("discord.js").Message} Member
+ * @typedef {import("discord.js").Channel} Channel
+ * @typedef {import("discord.js").Snowflake} Snowflake
+ * @typedef {import("discord.js").MessageEmbed} MessageEmbed
+ */

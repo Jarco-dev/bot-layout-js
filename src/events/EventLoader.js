@@ -3,10 +3,6 @@ const fs = require("fs").promises;
 const path = require("path");
 
 /**
- * @typedef {import("../Bot")} Client
- */
-
-/**
  * CommandLoader
  * The class for loading and unloading commands
  */
@@ -69,3 +65,7 @@ class CommandLoader {
 }
 
 module.exports = CommandLoader;
+
+/**
+ * @typedef {import("../Bot")} Client
+ */

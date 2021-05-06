@@ -1,11 +1,4 @@
 /**
- * @typedef {import("../Bot")} Client
- * @typedef {import("discord.js").Message} Message
- * @typedef {import("./structures/BaseCommand")} Command
- */
-
-
-/**
  * Cooldown
  * The class that handles with command cooldowns
  */
@@ -56,3 +49,9 @@ class Cooldown {
 }
 
 module.exports = Cooldown;
+
+/**
+ * @typedef {import("../Bot")} Client
+ * @typedef {import("discord.js").Message} Message
+ * @typedef {import("./structures/BaseCommand")} Command
+ */

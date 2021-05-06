@@ -1,7 +1,7 @@
-const { Structures } = require("discord.js");
+const Discord = require("discord.js");
 const GuildConfigs = require("../../database/models/GuildConfigs")
 
-exports = Structures.extend("Guild", Guild => {
+exports = Discord.Structures.extend("Guild", Guild => {
     class BetterGuild extends Guild {
         constructor(client, data) {
             super(client, data);

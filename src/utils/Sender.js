@@ -1,18 +1,6 @@
 const Discord = require("discord.js");
 
 /**
- * @typedef {import("../Bot")} Client
- * @typedef {import("discord.js").User} User
- * @typedef {import("discord.js").Message} Message
- * @typedef {import("discord.js").DMChannel} DMChannel
- * @typedef {import("discord.js").Snowflake} Snowflake
- * @typedef {import("discord.js").TextChannel} TextChannel
- * @typedef {import("discord.js").NewsChannel} NewsChannel
- * @typedef {import("discord.js").EmojiResolvable} EmojiResolvable
- * @typedef {import("discord.js").EmojiIdentifierResolvable} EmojiIdentifierResolvable
- */
-
-/**
  * Sender
  * The class that handles sending messages
  */
@@ -224,3 +212,15 @@ class Sender {
 }
 
 module.exports = Sender;
+
+/**
+ * @typedef {import("../Bot")} Client
+ * @typedef {import("discord.js").User} User
+ * @typedef {import("discord.js").Message} Message
+ * @typedef {import("discord.js").DMChannel} DMChannel
+ * @typedef {import("discord.js").Snowflake} Snowflake
+ * @typedef {import("discord.js").TextChannel} TextChannel
+ * @typedef {import("discord.js").NewsChannel} NewsChannel
+ * @typedef {import("discord.js").EmojiResolvable} EmojiResolvable
+ * @typedef {import("discord.js").EmojiIdentifierResolvable} EmojiIdentifierResolvable
+ */

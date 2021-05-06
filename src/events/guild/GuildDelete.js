@@ -1,9 +1,4 @@
 const BaseEvent = require("../../utils/structures/BaseEvent");
-
-/**
- * @typedef {import("discord.js").Guild} Guild
- */
-
 class GuildDeleteEvent extends BaseEvent {
     constructor() {
         super("guildDelete");
@@ -23,3 +18,7 @@ class GuildDeleteEvent extends BaseEvent {
 }
 
 module.exports = GuildDeleteEvent;
+
+/**
+ * @typedef {import("discord.js").Guild} Guild
+ */

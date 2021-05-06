@@ -1,10 +1,5 @@
 const BaseEvent = require("../../utils/structures/BaseEvent");
 
-/**
- * @typedef {import("discord.js").MessageReaction} MessageReaction
- * @typedef {import("discord.js").User} User
- */
-
 class MessageReactionRemoveEvent extends BaseEvent {
     constructor() {
         super("messageReactionRemove");
@@ -21,3 +16,8 @@ class MessageReactionRemoveEvent extends BaseEvent {
 }
 
 module.exports = MessageReactionRemoveEvent;
+
+/**
+ * @typedef {import("discord.js").User} User
+ * @typedef {import("discord.js").MessageReaction} MessageReaction
+ */

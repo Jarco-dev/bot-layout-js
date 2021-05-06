@@ -1,9 +1,4 @@
-const { Message } = require("discord.js");
 const BaseEvent = require("../../utils/structures/BaseEvent");
-
-/**
- * @typedef {import("discord.js").Message} Message
- */
 
 class MessageEvent extends BaseEvent {
     constructor() {
@@ -104,3 +99,7 @@ class MessageEvent extends BaseEvent {
 }
 
 module.exports = MessageEvent;
+
+/**
+ * @typedef {import("discord.js").Message} Message
+ */

@@ -1,14 +1,6 @@
 const EventEmitter = require("events");
 
 /**
- * @typedef {import("../Bot")} Client
- * @typedef {import("discord.js").Message} Message
- * @typedef {import("discord.js").Snowflake} Snowflake
- * @typedef {import("discord.js").ReactionEmoji} ReactionEmoji
- * @typedef {import("discord.js").EmojiIdentifierResolvable} EmojiIdentifierResolvable 
- */
-
-/**
  * ReactionCollector
  * A custom ReactionCollector listening to the reaction add and remove events
  */
@@ -143,3 +135,11 @@ class ReactionEventEmitter extends EventEmitter {
 }
 
 module.exports = ReactionCollector;
+
+/**
+ * @typedef {import("../Bot")} Client
+ * @typedef {import("discord.js").Message} Message
+ * @typedef {import("discord.js").Snowflake} Snowflake
+ * @typedef {import("discord.js").ReactionEmoji} ReactionEmoji
+ * @typedef {import("discord.js").EmojiIdentifierResolvable} EmojiIdentifierResolvable
+ */

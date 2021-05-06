@@ -2,10 +2,6 @@ const fs = require("fs");
 const db = require("sequelize");
 
 /**
- * @typedef {import("../Bot")} Client
- */
-
-/**
  * Database
  * The wrapper for the mysql database
  */
@@ -52,3 +48,7 @@ class Sequelize {
 }
 
 module.exports = Sequelize;
+
+/**
+ * @typedef {import("../Bot")} Client
+ */

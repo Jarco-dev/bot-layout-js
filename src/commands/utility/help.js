@@ -1,4 +1,3 @@
-const { Message } = require("discord.js");
 const BaseCommand = require("../../utils/structures/BaseCommand");
 
 class HelpCommand extends BaseCommand {

@@ -4,11 +4,6 @@ const { DataTypes } = require("sequelize");
 
 module.exports = {
   /**
-   * @typedef {import('sequelize').Sequelize} Sequelize
-   * @typedef {import('sequelize').QueryInterface} QueryInterface
-   */
-
-  /**
    * @param {QueryInterface} queryInterface
    * @param {Sequelize} Sequelize
    * @returns
@@ -35,3 +30,8 @@ module.exports = {
     await queryInterface.dropTable("GuildConfigs");
   }
 };
+
+/**
+  * @typedef {import('sequelize').Sequelize} Sequelize
+  * @typedef {import('sequelize').QueryInterface} QueryInterface
+  */

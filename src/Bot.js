@@ -1,21 +1,11 @@
 const Discord = require("discord.js");
-
-/**
- * @typedef {import("discord.js").Client} Client
- * @typedef {import("discord.js").ClientOptions} ClientOptions
- */
-
 /**
  * Client
  * The discord.js client
  */
 class Client extends Discord.Client {
     /**
-     * Options for the Client
-     * @typedef {ClientOptions} ClientOptions
-     */
-
-    /**
+     * Constructor
      * @param {ClientOptions} [options] - Options for the client
      */
     constructor(options = {}) {
@@ -68,3 +58,8 @@ class Client extends Discord.Client {
 }
 
 module.exports = new Client((require("./data/config")).clientOptions);
+
+/**
+ * @typedef {import("discord.js").Client} Client
+ * @typedef {import("discord.js").ClientOptions} ClientOptions
+ */
