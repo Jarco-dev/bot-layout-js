@@ -40,7 +40,7 @@ class Cooldown {
         const key = `${command.name}_${msg.author.id}`;
 
         if (this.cooldown[key]) {
-            const channelPerms = msg.channel.permissionsFor(this.client.user.id);
+            let channelPerms = (msg.guild) ? msg.channel.permissionsFor(this.client.user.id) : "NotInGuild";
             if (channelPerms.has("VIEW_CHANNEL") && channelPerms.has("SEND_MESSAGES")) {
                 const diff = this.cooldown[key] - Date.now();
                 const timeleft = (diff / 1000).toFixed(1);
