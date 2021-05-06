@@ -1,8 +1,11 @@
+const Discord = require("discord.js");
+
 /**
  * @typedef {import("../Bot")} Client
  * @typedef {import("discord.js").User} User
  * @typedef {import("discord.js").Message} Message
  * @typedef {import("discord.js").DMChannel} DMChannel
+ * @typedef {import("discord.js").Snowflake} Snowflake
  * @typedef {import("discord.js").TextChannel} TextChannel
  * @typedef {import("discord.js").NewsChannel} NewsChannel
  * @typedef {import("discord.js").EmojiResolvable} EmojiResolvable
@@ -114,7 +117,7 @@ class Sender {
      * @param {Message} msg - The command message
      * @param {String} content - The content you want to send
      * @param {Number} [del] - The delay before deleting the message in milliseconds
-     * @returns {Message>}
+     * @returns {Promise<Message>}
      */
     invalid(msg, content, del) {
         let maxLength = 2000;
@@ -138,7 +141,7 @@ class Sender {
      * @param {Message} msg - The command message
      * @param {String} content - The content you want to send
      * @param {Number} [del] - The delay before deleting the message in milliseconds
-     * @returns {Message>}
+     * @returns {Promise<Message>}
      */
     error(msg, content, del) {
         let maxLength = 2000;
@@ -159,40 +162,48 @@ class Sender {
 
     /**
      * Send a message in a channel
-     * @param {TextChannel|DMChannel|NewsChannel} channel - The channel to send the message in
+     * @param {TextChannel|DMChannel|NewsChannel|Snowflake} channel - The channel to send the message in
      * @param {String} content - The content you want to send
      * @param {Object} [options] - The channel message options
      * @param {EmojiIdentifierResolvable[]} [options.react] - The emoji(s) that should be added as reactions
      * @returns {Promise<Message>}
      */
     async msgChannel(channel, content, options) {
-        if (!channel || !content) return;
-
-        const message = channel.send(content);
-
-        // Add reactions if there is any
-        if (options && options.react) {
-            for (let i in options.react) {
-                await message.react(options.react[i]);
+        if (!(channel instanceof Discord.Channel)) {
+            try {
+                const id = channel.match(/[0-9]+/)[0];
+                if (id) channel = this.client.channels.resolve(id);
+            } catch (err) {
+                return;
             }
         }
 
-        return message;
+        if (channel) {
+            const message = await channel.send(content);
+
+            // Add reactions if there is any
+            if (options && options.react) {
+                for (let i in options.react) {
+                    await message.react(options.react[i]);
+                }
+            }
+            return message;
+        } else {
+            return;
+        }
     }
 
 
     /**
      * Reply to a message
-     * @param {User} user - The user you want to dm
+     * @param {User|Snowflake} user - The user you want to dm
      * @param {String} content - The content you want to send
      * @returns {Promise<Message>}
      */
     async msgUser(user, content) {
-        if (!user || !content) return;
-
-        if (!user instanceof User) {
+        if (!(user instanceof Discord.User)) {
             try {
-                id = user.match(/[0-9]+/)[0];
+                const id = user.match(/[0-9]+/);
                 if (id) user = await this.client.users.fetch(id);
             } catch (err) {
                 return;
@@ -205,6 +216,8 @@ class Sender {
             } catch (err) {
                 return;
             }
+        } else {
+            return;
         }
     }
 
