@@ -9,7 +9,7 @@ class PingCommand extends BaseCommand {
             examples: ["ping", "ping explain"],
             cooldown: 3000,
             deleteMsg: true,
-            permissions: ["VIEW_CHANNEL", "SEND_MESSAGE", "EMBED_LINKS"]
+            permissions: ["VIEW_CHANNEL", "SEND_MESSAGES", "EMBED_LINKS"]
         });
 
         this.repeatEmoji = this.config.emoji.repeat;
