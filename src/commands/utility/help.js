@@ -13,6 +13,7 @@ class HelpCommand extends BaseCommand {
         });
 
         this.commands = this.client.commandLoader.commands;
+        this.commandAliases = this.client.commandLoader.commandAliases;
         this.categories = this.client.commandLoader.categories;
     }
 
@@ -36,8 +37,9 @@ class HelpCommand extends BaseCommand {
         }
 
         // Show 1 specific command
-        else if (this.commands[msg.args[0].toLowerCase()]) {
-            const command = this.commands[msg.args[0].toLowerCase()];
+        else if (this.commands[msg.args[0].toLowerCase()] || this.commandAliases[msg.args[0].toLowerCase()]) {
+            let command = this.commands[msg.args[0].toLowerCase()];
+            if (!command) command = this.commands[this.commandAliases[msg.args[0].toLowerCase()]];
             const helpEmbed = this.global.embed()
                 .setTitle(`\`${msg.prefix}${command.name} ${command.args}\``)
                 .setFooter("<> = required [] = optional")
@@ -72,7 +74,7 @@ class HelpCommand extends BaseCommand {
 
         // Invalid argument
         else {
-            this.sender.invalid(msg, "This is a invalid argument, please enter a valid command name", 4000);
+            this.sender.invalid(msg, "Thats not a command, please provide a valid command", 4000);
         }
     }
 }
