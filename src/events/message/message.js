@@ -62,8 +62,8 @@ class MessageEvent extends BaseEvent {
                 if (!channelPerms.has(command.permissions[i])) {
                     if (channelPerms.has("VIEW_CHANNEL") && channelPerms.has("SEND_MESSAGES")) {
                         this.sender.error(msg, `The bot doesn't have the ${command.permissions[i]} permission! Please reinvite the bot, or contact your server admin!`);
-                        return;
                     }
+                    return;
                 }
             }
 
