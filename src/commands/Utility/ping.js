@@ -44,7 +44,7 @@ class PingCommand extends BaseCommand {
 
         // Invalid argument
         else {
-            this.sender.invalid(msg, "This is a invalid argument, did you mean `explain`?", 4000);
+            this.sender.invalid(msg, "This is a invalid argument, did you mean `explain`?", 5000);
         }
     }
 }

@@ -74,7 +74,7 @@ class HelpCommand extends BaseCommand {
 
         // Invalid argument
         else {
-            this.sender.invalid(msg, "Thats not a command, please provide a valid command", 4000);
+            this.sender.invalid(msg, "Thats not a command, please provide a valid command", 5000);
         }
     }
 }

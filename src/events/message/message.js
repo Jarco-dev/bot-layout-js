@@ -70,7 +70,7 @@ class MessageEvent extends BaseEvent {
             // nsfw
             if (command.nsfw && !msg.channel.nsfw) {
                 if (channelPerms.has("VIEW_CHANNEL") && channelPerms.has("SEND_MESSAGES")) {
-                    this.sender.invalid(msg, "This command can only be used in **nsfw** channels!", 4000);
+                    this.sender.invalid(msg, "This command can only be used in **nsfw** channels!", 5000);
                     return;
                 }
             }
@@ -80,7 +80,7 @@ class MessageEvent extends BaseEvent {
 
             // disableDm
             if (command.disableDm) {
-                this.sender.error(msg, "This command is disabled in my dm's!", 4000);
+                this.sender.error(msg, "This command is disabled in my dm's!", 5000);
                 return;
             }
         }
@@ -93,7 +93,7 @@ class MessageEvent extends BaseEvent {
             command.run(msg);
         } catch (err) {
             this.logger.error(err);
-            this.sender.error(msg, "An unexpected error occured, the command might have not worked fully!", 4000).catch();
+            this.sender.error(msg, "An unexpected error occured, the command might have not worked fully!", 5000).catch();
         }
     }
 }

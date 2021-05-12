@@ -21,12 +21,12 @@ class SetPrefixCommand extends BaseCommand {
     async run(msg) {
         // Checks if the user has permission
         await msg.member.fetch();
-        if (!msg.member.permissions.has("ADMINISTRATOR")) return this.sender.invalid(msg, "You need the `ADMINISTRATOR` permission to use this command", 4000);
+        if (!msg.member.permissions.has("ADMINISTRATOR")) return this.sender.invalid(msg, "You need the `ADMINISTRATOR` permission to use this command", 5000);
 
         // Handle the new prefix argument
-        if (!msg.args[0]) return this.sender.invalid(msg, "Please provide a new prefix", 4000);
-        if (msg.args[0].length > 10) return this.sender.invalid(msg, "A prefix can't be longer than 10 character", 4000);
-        if (msg.args[0] == msg.prefix) return this.sender.invalid(msg, `The prefix is already set to \`${msg.prefix}\``, 4000);
+        if (!msg.args[0]) return this.sender.invalid(msg, "Please provide a new prefix", 5000);
+        if (msg.args[0].length > 10) return this.sender.invalid(msg, "A prefix can't be longer than 10 character", 5000);
+        if (msg.args[0] == msg.prefix) return this.sender.invalid(msg, `The prefix is already set to \`${msg.prefix}\``, 5000);
 
         // Set the new prefix
         try {
@@ -35,7 +35,7 @@ class SetPrefixCommand extends BaseCommand {
             this.sender.success(msg, `The prefix has been updated to \`${msg.guild.prefix}\``);
         } catch (err) {
             this.logger.error(err);
-            this.sender.error(msg, "Something went wrong while setting the prefix, please try again", 4000);
+            this.sender.error(msg, "Something went wrong while setting the prefix, please try again", 5000);
         }
     }
 }
