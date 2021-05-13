@@ -58,7 +58,6 @@ class CommandLoader {
                             }
                             catch (err) {
                                 this.logger.error(err);
-                                // this.logger.error(`Error while loading command: ${Command.name}\n${err}`);
                             }
                         }
                     }
