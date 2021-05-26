@@ -27,8 +27,7 @@ class Global {
     embed() {
         return this.emptyEmbed()
             .setColor(this.config.colors.default)
-            .setTimestamp()
-            .setFooter("© Jarco 2021");
+            .setTimestamp();
     }
 
     /**

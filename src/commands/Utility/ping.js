@@ -12,8 +12,8 @@ class PingCommand extends BaseCommand {
             permissions: ["VIEW_CHANNEL", "SEND_MESSAGES", "EMBED_LINKS"]
         });
 
-        this.repeatEmoji = this.config.emoji.repeat;
-        this.heartEmoji = this.config.emoji.heartbeat;
+        this.repeatEmoji = "🔁";
+        this.heartEmoji = "💟";
     }
 
     /**

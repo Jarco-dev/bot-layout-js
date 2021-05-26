@@ -1,33 +1,39 @@
 module.exports = {
 
     // The bots default prefix (Will only change it for new guilds and dm's)
-    "prefix": ".",
+    prefix: ".",
 
     // Embed colors
-    "colors": {
-        "default": "ff4800",
-        "good": "00ff00",
-        "bad": "ff0000"
+    colors: {
+        default: "ff4800",
+        good: "00ff00",
+        bad: "ff0000"
     },
 
-    // Emojis used by the bot
-    "emoji": {
-        "success": "✅",
-        "invalid": "❌",
-        "error": "⚠",
-        "time": "⏱",
-        "repeat": "🔁",
-        "heartbeat": "💟"
+    // Major emojis used by the bot
+    emoji: {
+        // Message types
+        success: "✅",
+        invalid: "❌",
+        error: "⚠",
+        time: "⏱",
     },
 
+    // Enable logging debug / verbose info (you will normally want to have this on false)
     debug: true,
 
+    /**
+     * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+     *   THE SETTINGS BELOW CAN BREAK THE BOT IT'S BETTER NOT TO TOUCH THIS
+     * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+     */
+
     // Discord.js client options
-    "clientOptions": {
-        "messageEditHistoryMaxSize": 0,
-        "disableMentions": "everyone",
-        "ws": {
-            "intents": [
+    clientOptions: {
+        messageEditHistoryMaxSize: 0,
+        disableMentions: "everyone",
+        ws: {
+            intents: [
                 "GUILDS",
                 "GUILD_MEMBERS",
                 "GUILD_BANS",
@@ -46,5 +52,4 @@ module.exports = {
             ]
         }
     }
-
 }
