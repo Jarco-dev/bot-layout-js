@@ -42,7 +42,7 @@ class Sender {
             if (del && del > 0) {
                 return msg.channel.send(content)
                     .then(message => setTimeout(() => {
-                        message.delete().catch();
+                        message.delete().catch(() => { });
                     }, del));
             } else {
                 return msg.channel.send(content);
@@ -68,7 +68,7 @@ class Sender {
             if (del && del > 0) {
                 return msg.channel.send(`**${emoji}  | ${username}**, ${content}`)
                     .then(message => setTimeout(() => {
-                        message.delete().catch();
+                        message.delete().catch(() => { });
                     }, del));
             } else {
                 return msg.channel.send(`**${emoji}  | ${username}**, ${content}`);
@@ -92,7 +92,7 @@ class Sender {
             if (del && del > 0) {
                 return msg.channel.send(`${this.successEmoji}  **|** ${content}`)
                     .then(message => setTimeout(() => {
-                        message.delete().catch();
+                        message.delete().catch(() => { });
                     }, del));
             } else {
                 return msg.channel.send(`${this.successEmoji}  **|** ${content}`);
@@ -116,7 +116,7 @@ class Sender {
             if (del && del > 0) {
                 return msg.channel.send(`${this.invalidEmoji}  **|** ${content}`)
                     .then(message => setTimeout(() => {
-                        message.delete().catch();
+                        message.delete().catch(() => { });
                     }, del));
             } else {
                 return msg.channel.send(`${this.invalidEmoji}  **|** ${content}`);
@@ -140,7 +140,7 @@ class Sender {
             if (del && del > 0) {
                 return msg.channel.send(`${this.errorEmoji}  **|** ${content}`)
                     .then(message => setTimeout(() => {
-                        message.delete().catch();
+                        message.delete().catch(() => { });
                     }, del));
             } else {
                 return msg.channel.send(`${this.errorEmoji}  **|** ${content}`);

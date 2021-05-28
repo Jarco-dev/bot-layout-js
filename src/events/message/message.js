@@ -93,7 +93,7 @@ class MessageEvent extends BaseEvent {
             command.run(msg);
         } catch (err) {
             this.logger.error(err);
-            this.sender.error(msg, "An unexpected error occured, the command might have not worked fully!", 5000).catch();
+            this.sender.error(msg, "An unexpected error occured, the command might have not worked fully!", 5000).catch(() => { });
         }
     }
 }
