@@ -1,6 +1,6 @@
 {
   "name": "botlayout",
-  "version": "2.0.9",
+  "version": "2.0.10",
   "description": "A layout for discord bots",
   "main": "index.js",
   "scripts": {

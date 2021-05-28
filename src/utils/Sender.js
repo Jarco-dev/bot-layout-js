@@ -183,7 +183,7 @@ class Sender {
 
 
     /**
-     * Reply to a message
+     * Send a message to a user
      * @param {User|Snowflake} user - The user you want to dm
      * @param {String} content - The content you want to send
      * @returns {Promise<Message>}
