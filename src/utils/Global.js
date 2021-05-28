@@ -64,7 +64,7 @@ class Global {
         userId = userId.match(/[0-9]+/);
         if (!userId) return;
         userId = userId[0];
-        let member = await guild.members.fetch(userId);
+        let member = await guild.members.fetch(userId).catch(err => { });
         return member;
     }
 
@@ -81,7 +81,7 @@ class Global {
         if (!roleId) return;
         roleId = roleId[0];
         console.log(roleId);
-        let role = await guild.roles.fetch(roleId);
+        let role = await guild.roles.fetch(roleId).catch(err => { });
         return role;
     }
 
@@ -97,7 +97,7 @@ class Global {
         channelId = channelId.match(/[0-9]+/);
         if (!channelId) return;
         channelId = channelId[0];
-        let channel = guild.channels.resolve(channelId);
+        let channel = guild.channels.resolve(channelId).catch(err => { });
         return channel;
     }
 
@@ -125,6 +125,30 @@ class Global {
         if (time >= 1) result = day + "d " + result;
 
         return result;
+    }
+
+
+
+    /**
+     * Check a list of permissions for the bot and return a boolean
+     * @param {Channel} channel - The channel to check in
+     * @param {PermissionFlags[]} permissions - The array of permission flags to check
+     * @param {Channel} [notifChan] - The channel to notify missing permissions in
+     * @returns {Boolean}
+     */
+    async hasPermissions(channel, permissions, notifChan) {
+        const perms = await channel.permissionsFor(this.client.user);
+        for (let i in permissions) {
+            if (!perms.has(permissions[i])) {
+                if (!notifChan) return false;
+                const notifChanPerms = await notifChan.permissionsFor(this.client.user);
+                if (notifChanPerms.has("VIEW_CHANNEL") && notifChanPerms.has("SEND_MESSAGES")) {
+                    this.sender.msgChannel(notifChan, `${this.errorEmoji} **|** The bot doesn't have the \`${permissions[i]}\` permission in ${channel}, Please contact your server admin!`);
+                }
+                return false;
+            }
+        }
+        return true;
     }
 }
 
