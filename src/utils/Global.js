@@ -18,6 +18,9 @@ class Global {
 
         /** @private */
         this.config = client.config;
+
+        /** @Private */
+        this.sender = client.sender;
     }
 
     /**
@@ -143,10 +146,29 @@ class Global {
                 if (!notifChan) return false;
                 const notifChanPerms = await notifChan.permissionsFor(this.client.user);
                 if (notifChanPerms.has("VIEW_CHANNEL") && notifChanPerms.has("SEND_MESSAGES")) {
-                    this.sender.msgChannel(notifChan, `${this.errorEmoji} **|** The bot doesn't have the \`${permissions[i]}\` permission in ${channel}, Please contact your server admin!`);
+                    this.sender.msgChannel(notifChan, `${this.config.emoji.invalid} **|** The bot doesn't have the \`${permissions[i]}\` permission in ${channel}, Please contact your server admin!`);
                 }
                 return false;
             }
+        }
+        return true;
+    }
+
+    /**
+     * Check wether a list of roles is managable by the bot
+     * @param {Role[]} roles - The array of roles to check 
+     * @param {*} notifChan - The channel to notify missing permissions in
+     * @returns {Boolean} 
+     */
+    async canManageRoles(roles, notifChan) {
+        roles = roles.filter(role => role.editable == false).sort((a, b) => b.position - a.position);
+        if (roles[0]) {
+            if (!notifChan) return false;
+            const notifChanPerms = await notifChan.permissionsFor(this.client.user);
+            if (notifChanPerms.has("VIEW_CHANNEL") && notifChanPerms.has("SEND_MESSAGES")) {
+                this.sender.msgChannel(notifChan, `${this.config.emoji.invalid} **|** The bot is too low in the role hierarchy to manage the \`${roles[0].name}\` role, Please contact your server admin!`);
+            }
+            return false;
         }
         return true;
     }
