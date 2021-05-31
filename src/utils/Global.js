@@ -100,7 +100,7 @@ class Global {
         channelId = channelId.match(/[0-9]+/);
         if (!channelId) return;
         channelId = channelId[0];
-        let channel = guild.channels.resolve(channelId).catch(err => { });
+        let channel = guild.channels.resolve(channelId);
         return channel;
     }
 
