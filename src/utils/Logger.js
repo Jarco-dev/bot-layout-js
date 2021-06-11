@@ -59,11 +59,10 @@ class Logger {
     /**
      * Log an error message
      * @param {String} message - The error message
-     * @param {String} error - The cougth error
      */
-    error(message, error) {
+    error(message) {
         if (this.level <= 4) {
-            console.error("\x1b[31m%s\x1b[0m", `[${this._getDateTimeString()}] [ERROR]`, message, error);
+            console.error("\x1b[31m%s\x1b[0m", `[${this._getDateTimeString()}] [ERROR]`, message);
         }
     }
 
