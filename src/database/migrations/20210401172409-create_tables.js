@@ -1,37 +1,34 @@
-'use strict';
-
 const { DataTypes } = require("sequelize");
 
-module.exports = {
-  /**
-   * @param {QueryInterface} queryInterface
-   * @param {Sequelize} Sequelize
-   * @returns
-   */
-  up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("GuildConfigs", {
-      guildId: {
-        type: DataTypes.STRING(18),
-        primaryKey: true
-      },
-      prefix: {
-        type: DataTypes.STRING(10),
-        allowNull: false
-      }
+/**
+ * @param {QueryInterface} queryInterface
+ * @param {Sequelize} Sequelize
+ * @returns {void}
+ */
+const up = async (queryInterface, Sequelize) => {
+    await queryInterface.createTable("ExampleTable", {
+        key: {
+            type: DataTypes.STRING,
+            primaryKey: true
+        },
+        value: {
+            type: DataTypes.STRING
+        }
     });
-  },
-
-  /**
-   * @param {QueryInterface} queryInterface
-   * @param {Sequelize} Sequelize
-   * @returns
-   */
-  down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("GuildConfigs");
-  }
-};
+}
 
 /**
-  * @typedef {import('sequelize').Sequelize} Sequelize
-  * @typedef {import('sequelize').QueryInterface} QueryInterface
-  */
+ * @param {QueryInterface} queryInterface
+ * @param {Sequelize} Sequelize
+ * @returns {void}
+ */
+const down = async (queryInterface, Sequelize) => {
+    await queryInterface.dropTable("ExampleTable");
+}
+
+module.exports = { up, down };
+
+/**
+ * @typedef {import("sequelize").Sequelize} Sequelize
+ * @typedef {import("sequelize").QueryInterface} QueryInterface
+ */

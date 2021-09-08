@@ -23,5 +23,5 @@ This bot has been coded for CLIENTS NAME
 
 # Starting
 * Open a terminal and navigate to the bots folder
-* Run `npm start` and the bot should login
+* Run `npm start` and the bot should log in
 * The bot is now ready for use

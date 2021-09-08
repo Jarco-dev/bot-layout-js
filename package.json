@@ -9,7 +9,7 @@
   },
   "author": "Jarco-dev",
   "dependencies": {
-    "discord.js": "12.x",
+    "discord.js": "^13.1.0",
     "moment": "2.x",
     "mysql2": "2.x",
     "sequelize": "6.x",

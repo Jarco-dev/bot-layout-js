@@ -6,81 +6,82 @@ const moment = require("moment");
  */
 class Logger {
     /**
-     * Set the log level upon creation
-     * @param {String|Number} level - The level of logs at wich you want to start logging 
+     * Constructor
      */
-    constructor(level) {
-        /** @private */
-        this.level;
-
-        this._setLogLevel(level);
+    constructor() {
+        /**
+         * The current log level
+         * @type {0|1|2|3|4}
+         */
+        this.level = 0;
     }
 
     /**
      * Log the verbose message
-     * @param {String} message - The verbose message 
+     * @param {...any} message - The message to log
+     * @returns {void}
      */
     verbose(message) {
         if (this.level <= 0) {
-            console.log(`[${this._getDateTimeString()}] [VERBOSE]`, message);
+            const args = Array.prototype.slice.call(arguments);
+            console.log(`[${this._getDateTimeString()}] [VERBOSE]`, args);
         }
     }
 
     /**
      * Log a debug message
-     * @param {String} message - The debug message 
+     * @param {...any} message - The message to log
+     * @returns {void}
      */
     debug(message) {
         if (this.level <= 1) {
-            console.log("\x1b[36m%s\x1b[0m", `[${this._getDateTimeString()}] [DEBUG]`, message);
+            const args = Array.prototype.slice.call(arguments);
+            console.debug("\x1b[36m%s\x1b[0m", `[${this._getDateTimeString()}] [DEBUG]`, args);
         }
     }
 
     /**
      * Log the info message
-     * @param {String} message - The info message 
+     * @param {...any} message - The message to log
+     * @returns {void}
      */
     info(message) {
         if (this.level <= 2) {
-            console.log("\x1b[32m%s\x1b[0m", `[${this._getDateTimeString()}] [INFO]`, message);
+            const args = Array.prototype.slice.call(arguments);
+            console.info("\x1b[32m%s\x1b[0m", `[${this._getDateTimeString()}] [INFO]`, args);
         }
     }
 
     /**
      * Log a warn message
-     * @param {String} message - The warning message 
+     * @param {...any} message - The message to log
+     * @returns {void}
      */
     warn(message) {
         if (this.level <= 3) {
-            console.warn("\x1b[33m%s\x1b[0m", `[${this._getDateTimeString()}] [WARN]`, message)
+            const args = Array.prototype.slice.call(arguments);
+            console.warn("\x1b[33m%s\x1b[0m", `[${this._getDateTimeString()}] [WARN]`, args);
         }
     }
 
     /**
-     * Log an error message
-     * @param {String} message - The error message
+     * Log a error message
+     * @param {...any} message - The message to log
+     * @returns {void}
      */
     error(message) {
         if (this.level <= 4) {
-            console.error("\x1b[31m%s\x1b[0m", `[${this._getDateTimeString()}] [ERROR]`, message);
+            const args = Array.prototype.slice.call(arguments);
+            console.error("\x1b[31m%s\x1b[0m", `[${this._getDateTimeString()}] [ERROR]`, args);
         }
-    }
-
-    /**
-     * Get the current date and time in the YYYY-MM-DD HH:mm:ss format
-     * @returns {String}
-     * @private
-     */
-    _getDateTimeString() {
-        return moment.utc().format("YYYY-MM-DD HH:mm:ss");
     }
 
     /**
      * Set the logging level
-     * @param {String|Number} level - The level of logs at wich you want to start logging
-     * @private
+     * @param {"verbose"|"debug"|"info"|"warn"|"error"|0|1|2|3|4} level - The level of logs at wich you want to start logging them
+     * @returns {void}
      */
-    _setLogLevel(level) {
+    setLogLevel(level) {
         switch (level) {
             case "verbose":
             case 0:
@@ -111,6 +112,19 @@ class Logger {
                 throw new Error(`level is a invalid log level`);
         }
     }
+
+    /**
+     * Get the current date and time in the YYYY-MM-DD HH:mm:ss format
+     * @returns {String}
+     * @private
+     */
+    _getDateTimeString() {
+        return moment.utc().format("YYYY-MM-DD HH:mm:ss");
+    }
 }
 
 module.exports = Logger;
+
+/**
+ * @typedef {"verbose"|"debug"|"info"|"warn"|"error"|0|1|2|3|4} LogLevel
+ */

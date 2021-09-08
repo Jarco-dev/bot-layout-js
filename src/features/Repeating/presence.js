@@ -8,7 +8,8 @@ class PresenceFeature extends BaseFeature {
     constructor() {
         super("presence");
 
-        this.interval;
+        /** @type {NodeJS.Timeout|Number} */
+        this.interval = undefined;
     }
 
     /**
@@ -21,16 +22,22 @@ class PresenceFeature extends BaseFeature {
 
     /**
      * Update the bots presence
+     * @returns {void}
      * @private
      */
     async _update() {
-        const members = await this.client.guilds.cache.reduce((amount, guild) => amount + guild.memberCount, 0);
+        const members = this.client.guilds.cache.reduce((amount, guild) => amount + guild.memberCount, 0);
         this.client.user.setPresence({
             status: "online",
-            activity: {
-                name: `${members} users`,
-                type: "LISTENING"
-            }
+            activities: [
+                {
+                    name: `${members} users`,
+                    type: "LISTENING"
+                }, {
+                    name: "test",
+                    type: "PLAYING"
+                }
+            ]
         });
     }
 }

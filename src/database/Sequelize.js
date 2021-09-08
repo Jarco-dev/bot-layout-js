@@ -3,7 +3,7 @@ const db = require("sequelize");
 
 /**
  * Database
- * The wrapper for the mysql database
+ * The database wrapper for mysql
  */
 class Sequelize {
     /**
@@ -34,16 +34,17 @@ class Sequelize {
 
     /**
      * Find and initialise all the models
+     * @returns {void}
      * @private
      */
     async _initModels() {
-        fs.readdirSync("./src/database/models")
-            .filter((file) => {
-                return (file.indexOf(".") !== 0 && file.endsWith(".js"));
-            })
-            .forEach((file) => {
-                require(`./models/${file}`).init(this.con);
-            });
+        try {
+            fs.readdirSync("./src/database/models")
+                .filter((file) => (file.indexOf(".") !== 0 && file.endsWith(".js")))
+                .forEach((file) => require(`./models/${file}`).init(this.con));
+        } catch (err) {
+            this.logger.error("Error while initialising database models", err);
+        }
     }
 }
 

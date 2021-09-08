@@ -5,8 +5,12 @@ class ReadyEvent extends BaseEvent {
         super("ready");
     }
 
+    /**
+     * Run the event
+     */
     run() {
         this.logger.info(`${this.client.user.tag} logged in`);
+        this.client.commandLoader.updateCommands(this.sConfig.commandLoadLevel, this.sConfig.commandDevGuild);
         this.client.featureLoader.startAll();
     }
 }

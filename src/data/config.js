@@ -1,26 +1,19 @@
+const { Intents } = require("discord.js");
+
 module.exports = {
 
-    // The bots default prefix (Will only change it for new guilds and dm's)
-    prefix: ".",
-
-    // Embed colors
+    // Bot colors
     colors: {
-        default: "ff4800",
-        good: "00ff00",
-        bad: "ff0000"
+        default: "F88038"
     },
 
-    // Major emojis used by the bot
-    emoji: {
-        // Message types
-        success: "✅",
-        invalid: "❌",
-        error: "⚠",
-        time: "⏱",
+    // Message type emojis and colors
+    msgTypes: {
+        success: { emoji: "✅", color: "00FF00" },
+        invalid: { emoji: "❌", color: "ORANGE" },
+        error: { emoji: "⚠", color: "FF0000" },
+        time: { emoji: "⏱", color: "ORANGE" }
     },
-
-    // Enable logging debug / verbose info (you will normally want to have this on false)
-    debug: true,
 
     /**
      * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
@@ -28,28 +21,31 @@ module.exports = {
      * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
      */
 
-    // Discord.js client options
+    /**
+     * Discord.js client options
+     * @type {ClientOptions}
+     */
     clientOptions: {
-        messageEditHistoryMaxSize: 0,
-        disableMentions: "everyone",
-        ws: {
-            intents: [
-                "GUILDS",
-                "GUILD_MEMBERS",
-                "GUILD_BANS",
-                "GUILD_EMOJIS",
-                "GUILD_INTEGRATIONS",
-                "GUILD_WEBHOOKS",
-                "GUILD_INVITES",
-                "GUILD_VOICE_STATES",
-                "GUILD_PRESENCES",
-                "GUILD_MESSAGES",
-                "GUILD_MESSAGE_REACTIONS",
-                "GUILD_MESSAGE_TYPING",
-                "DIRECT_MESSAGES",
-                "DIRECT_MESSAGE_REACTIONS",
-                "DIRECT_MESSAGE_TYPING"
-            ]
-        }
+        intents: [
+            Intents.FLAGS.DIRECT_MESSAGES,
+            Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
+            Intents.FLAGS.DIRECT_MESSAGE_TYPING,
+            Intents.FLAGS.GUILDS,
+            Intents.FLAGS.GUILD_BANS,
+            Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
+            Intents.FLAGS.GUILD_INTEGRATIONS,
+            Intents.FLAGS.GUILD_INVITES,
+            Intents.FLAGS.GUILD_MEMBERS,
+            Intents.FLAGS.GUILD_MESSAGES,
+            Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+            Intents.FLAGS.GUILD_MESSAGE_TYPING,
+            Intents.FLAGS.GUILD_PRESENCES,
+            Intents.FLAGS.GUILD_VOICE_STATES,
+            Intents.FLAGS.GUILD_WEBHOOKS
+        ]
     }
 }
+
+/**
+ * @typedef {import("discord.js").ClientOptions} ClientOptions
+ */

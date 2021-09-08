@@ -4,12 +4,15 @@ class PingCommand extends BaseCommand {
     constructor() {
         super({
             name: "ping",
-            description: "Show the bots latency with the api and it's actualy response time",
-            args: "[explain]",
-            examples: ["ping", "ping explain"],
+            description: "View the bots response time",
+            options: [{
+                type: "SUB_COMMAND",
+                name: "explain",
+                description: "Explains how the response time is established"
+            }],
             cooldown: 3000,
-            deleteMsg: true,
-            permissions: ["VIEW_CHANNEL", "SEND_MESSAGES", "EMBED_LINKS"]
+            botPermissions: ["VIEW_CHANNEL", "SEND_MESSAGES", "EMBED_LINKS"],
+            status: "enabled"
         });
 
         this.repeatEmoji = "🔁";
@@ -18,35 +21,47 @@ class PingCommand extends BaseCommand {
 
     /**
      * Run the command
-     * @param {import("discord.js").Message} msg - The message 
+     * @param {CommandInteraction} i - The command interaction
      */
-    async run(msg) {
-        // Show latencies
-        if (!msg.args[0]) {
-            const pingingEmbed = this.global.embed()
-                .setTitle("Pinging...");
-            const reply = await this.sender.send(msg, pingingEmbed);
+    async run(i) {
+        // Subcommands
+        switch (i?.options?.getSubcommand(false)) {
 
-            const timeDiff = reply.createdTimestamp - msg.createdTimestamp
-            const resultEmbed = this.global.embed()
-                .setTitle("Ping result")
-                .setDescription(`${this.repeatEmoji} **RTT**: ${timeDiff}ms\n${this.heartEmoji} **Heartbeat**: ${Math.round(this.client.ws.ping)}ms`);
-            reply.edit(resultEmbed);
-        }
+            // Explain
+            case "explain": {
+                const explainEmbed = this.global.embed()
+                    .setTitle("Ping explanation")
+                    .setDescription(`
+                        ${this.repeatEmoji} **RTT**: The delay between you sending the message and the bot replying
+                        ${this.heartEmoji} **Heartbeat**: The delay between the bot and the discord api servers
+                    `);
+                this.sender.reply(i, { embeds: [explainEmbed] });
+                break;
+            }
 
-        // Explain latencies
-        else if (msg.args[0] == "explain") {
-            const explainEmbed = this.global.embed()
-                .setTitle("Ping explenation")
-                .setDescription(`${this.repeatEmoji} **RTT**: The time between you sending the message and the bot replying\n${this.heartEmoji} **Heartbeat**: The delay between the bot and the discord api servers`);
-            this.sender.send(msg, explainEmbed);
-        }
+            // Default command (ping the bot)
+            default: {
+                // Send a reply indication that we're pinging
+                const pingingEmbed = this.global.embed().setTitle("Pinging...");
+                const reply = await this.sender.reply(i, { embeds: [pingingEmbed], fetchReply: true });
 
-        // Invalid argument
-        else {
-            this.sender.invalid(msg, "This is a invalid argument, did you mean `explain`?", 5000);
+                // Calculate the delay and edit the reply
+                const timeDiff = reply.createdTimestamp - i.createdTimestamp;
+                const resultEmbed = this.global.embed()
+                    .setTitle("Ping result")
+                    .setDescription(`
+                        ${this.repeatEmoji} **RTT**: ${timeDiff}ms
+                        ${this.heartEmoji} **Heartbeat**: ${this.client.ws.ping}ms
+                    `);
+                this.sender.reply(i, { embeds: [resultEmbed] }, { editReply: true });
+                break;
+            }
         }
     }
 }
 
 module.exports = PingCommand;
+
+/**
+ * @typedef {import("discord.js").CommandInteraction} CommandInteraction
+ */

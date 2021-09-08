@@ -1,4 +1,5 @@
 const Discord = require("discord.js");
+
 /**
  * Client
  * The discord.js client
@@ -9,27 +10,28 @@ class Client extends Discord.Client {
      * @param {ClientOptions} [options] - Options for the client
      */
     constructor(options = {}) {
-        // Extend Discord.js structures
-        require("./utils/structures/BetterGuilds");
-
         super(options);
 
-        // secret
+        // Secret configs
         this.auth = require("../secret/auth");
+        this.sConfig = require("../secret/secretConfig");
 
         // Bot configs
         this.config = require("./data/config");
-        this.version = require("../package.json").version;
-        this.debug = this.config.debug;
+        this.config.version = require("../package.json").version;
 
         // Logger
-        this.logger = new (require("./utils/Logger"))((this.debug) ? "verbose" : "info");
+        this.logger = new (require("./utils/Logger"));
+        this.logger.setLogLevel(this.sConfig.logLevel);
 
         // Database
         this.sequelize = new (require("./database/Sequelize"))(this);
         this.db = {
-            GuildConfigs: require("./database/models/GuildConfigs")
+            ExampleTable: require("./database/models/ExampleTable") // This is a example!
         }
+
+        // Data manager
+        this.dataManager = new (require("./utils/DataManager"))(this);
 
         // Message sender
         this.sender = new (require("./utils/Sender"))(this);
@@ -38,10 +40,7 @@ class Client extends Discord.Client {
         this.global = new (require("./utils/Global"))(this);
 
         // Cooldown check
-        this.cooldown = new (require("./utils/Cooldown"))(this);
-
-        // ReactionCollector (Custom)
-        this.reactionCollector = new (require("./utils/ReactionCollector"))(this);
+        this.cooldownManager = new (require("./utils/CooldownManager"))(this);
 
         // Command handler
         this.commandLoader = new (require("./commands/CommandLoader"))(this);

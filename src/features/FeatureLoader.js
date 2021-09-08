@@ -22,10 +22,9 @@ class CommandLoader {
         this.config = client.config;
 
         /**
-         * All the currenty loaded features
+         * All the currently loaded features
          */
         this.features = {};
-        this.categories = {};
 
         /**
          * The path to the features folder
@@ -35,43 +34,44 @@ class CommandLoader {
 
     /**
      * Load all the features that are available
+     * @returns {void}
      */
     async loadAll() {
-        // Get all the categories
-        const categories = await fs.readdir(this.path);
-        for (const category of categories) {
+        // Get all the folders
+        const folders = await fs.readdir(this.path);
+        for (const folder of folders) {
             // Load the features if it's a folder
-            if ((await fs.lstat(this.path + category)).isDirectory()) {
-                this.categories[category] = [];
-                const files = await fs.readdir(this.path + category);
+            if ((await fs.lstat(this.path + folder)).isDirectory()) {
+                const files = await fs.readdir(this.path + folder);
                 // Go through all the feature files
                 for (const file of files) {
                     if (file.endsWith(".js")) {
-                        const Feature = require(path.join(__dirname, `${category}/${file}`));
-                        if (Feature.prototype instanceof BaseFeature) {
-                            const feature = new Feature();
-                            this.features[feature.name] = feature;
-                            this.categories[category].push(feature.name);
+                        // Load the feature
+                        try {
+                            const Feature = require(path.join(__dirname, `${folder}/${file}`));
+                            if (Feature.prototype instanceof BaseFeature) {
+                                const feature = new Feature();
+                                this.features[feature.name] = feature;
+                            }
+                        } catch (err) {
+                            this.logger.error(`Error while trying to load a feature featureFile: ${file}`, err);
                         }
                     }
                 }
-            }
-            // If the category has no events remove it
-            if (this.categories[category] == {}) {
-                delete this.categories[category];
             }
         }
     }
 
     /**
      * Start all the loaded features
+     * @returns {void}
      */
     async startAll() {
         for (const feature in this.features) {
             try {
                 this.features[feature].start();
             } catch (err) {
-                this.logger.error(err);
+                this.logger.error(`Error while starting a feature feature: ${feature}`, err);
             }
         }
     }

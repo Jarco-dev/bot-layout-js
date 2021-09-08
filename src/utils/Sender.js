@@ -17,210 +17,157 @@ class Sender {
         this.logger = client.logger;
 
         /** @private */
-        this.successEmoji = this.client.config.emoji.success;
-
-        /** @private */
-        this.invalidEmoji = this.client.config.emoji.invalid;
-
-        /** @private */
-        this.errorEmoji = this.client.config.emoji.error;
+        this.config = client.config;
     }
 
     /**
-     * Send a message to the msg channel
-     * @param {Message} msg - The command message
-     * @param {String} content - The content you want to send
-     * @param {Number} [del] - The delay before deleting the message in milliseconds
-     * @returns {Promise<Message>}
+     * Reply to a interaction
+     * @param {Interaction} i - The interaction
+     * @param {String|MessagePayload|InteractionReplyOptions} payload - The payload you want to send
+     * @param {SenderReplyOptions} [options] - The sender options
+     * @returns {Promise<Message|void>}
      */
-    send(msg, content, del) {
-        let maxLength = 2000;
+    reply(i, payload, options) {
+        // No options shortcut
+        if (!options) return i.reply(payload);
 
-        if (typeof content === "string" && content.length >= maxLength) {
-            return msg.channel.send(`${this.errorEmoji}  **|** Error, the message is too long to send`);
-        } else {
-            if (del && del > 0) {
-                return msg.channel.send(content)
-                    .then(message => setTimeout(() => {
-                        message.delete().catch(() => { });
-                    }, del));
+        // Handle the bot message type
+        if (options.msgType) {
+            // Cancel message type reply if there is a embed
+            if (payload.embeds) throw new Error("the provided embed would be overwritten by the msgType");
+
+            // Create and set the embed
+            const embed = new Discord.MessageEmbed()
+                .setColor(this.config.msgTypes[options.msgType].color);
+
+            if (typeof payload === "string") {
+                embed.setDescription(`${this.config.msgTypes[options.msgType].emoji} **${payload}**`);
+                payload = { embeds: [embed] };
             } else {
-                return msg.channel.send(content);
+                embed.setDescription(`${this.config.msgTypes[options.msgType].emoji} **${payload.content}**`);
+                delete payload.content;
+                payload.embeds = [embed];
             }
         }
+
+        // Fetch the reply if there are any after send options required
+        if (options.delTime) payload.fetchReply = true;
+
+        // Send the message
+        return i[(options?.editReply) ? "editReply" : "reply"](payload)
+            .then(async msg => {
+                // Message delete timeout
+                if (options.delTime && msg?.deletable) setTimeout(() => msg.delete().catch(() => {}), options.delTime)
+            });
     }
 
     /**
-     * Reply to a message
-     * @param {Message} msg - The command message
-     * @param {EmojiResolvable} emoji - The emoji to use in the reply
-     * @param {String} content - The content you want to send
-     * @param {Number} [del] - The delay before deleting the message in milliseconds
+     * Send a message to the original channel
+     * @param {Message|Interaction} origin - The original message or interaction
+     * @param {String|MessagePayload|MessageOptions} payload - The payload you want to send
+     * @param {SenderMessageOptions} [options] - The sender options
      * @returns {Promise<Message>}
      */
-    reply(msg, emoji, content, del) {
-        let maxLength = 2000;
-        let username = msg.author.username;
-
-        if (typeof content === "string" && content.length >= maxLength) {
-            return msg.channel.send(`${this.errorEmoji}  **|** Error, the message is too long to send`);
-        } else {
-            if (del && del > 0) {
-                return msg.channel.send(`**${emoji}  | ${username}**, ${content}`)
-                    .then(message => setTimeout(() => {
-                        message.delete().catch(() => { });
-                    }, del));
-            } else {
-                return msg.channel.send(`**${emoji}  | ${username}**, ${content}`);
-            }
-        }
+    send(origin, payload, options) {
+        const channel = origin?.channel || origin?.msg?.channel;
+        return this._sendMsg(channel, payload, options);
     }
 
     /**
-     * Reply to a message
-     * @param {Message} msg - The command message
-     * @param {String} content - The content you want to send
-     * @param {Number} [del] - The delay before deleting the message in milliseconds
-     * @returns {Promise<Message>}
+     * Send a message to a channel
+     * @param {TextBasedChannels|Snowflake} channel - The channel to send the message in
+     * @param {String|MessagePayload|MessageOptions} payload - The payload you want to send
+     * @param {SenderMessageOptions} [options] - The sender options
+     * @returns {Promise<Message|void>}
      */
-    success(msg, content, del) {
-        let maxLength = 2000;
-
-        if (typeof content === "string" && content.length >= maxLength) {
-            return msg.channel.send(`${this.errorEmoji}  **|** Error, the message is too long to send`);
-        } else {
-            if (del && del > 0) {
-                return msg.channel.send(`${this.successEmoji}  **|** ${content}`)
-                    .then(message => setTimeout(() => {
-                        message.delete().catch(() => { });
-                    }, del));
-            } else {
-                return msg.channel.send(`${this.successEmoji}  **|** ${content}`);
-            }
-        }
-    }
-
-    /**
-     * Reply to a message
-     * @param {Message} msg - The command message
-     * @param {String} content - The content you want to send
-     * @param {Number} [del] - The delay before deleting the message in milliseconds
-     * @returns {Promise<Message>}
-     */
-    invalid(msg, content, del) {
-        let maxLength = 2000;
-
-        if (typeof content === "string" && content.length >= maxLength) {
-            return msg.channel.send(`${this.errorEmoji}  **|** Error, the message is too long to send`);
-        } else {
-            if (del && del > 0) {
-                return msg.channel.send(`${this.invalidEmoji}  **|** ${content}`)
-                    .then(message => setTimeout(() => {
-                        message.delete().catch(() => { });
-                    }, del));
-            } else {
-                return msg.channel.send(`${this.invalidEmoji}  **|** ${content}`);
-            }
-        }
-    }
-
-    /**
-     * Reply to a message
-     * @param {Message} msg - The command message
-     * @param {String} content - The content you want to send
-     * @param {Number} [del] - The delay before deleting the message in milliseconds
-     * @returns {Promise<Message>}
-     */
-    error(msg, content, del) {
-        let maxLength = 2000;
-
-        if (typeof content === "string" && content.length >= maxLength) {
-            return msg.channel.send(`${this.errorEmoji}  **|** Error, the message is too long to send`);
-        } else {
-            if (del && del > 0) {
-                return msg.channel.send(`${this.errorEmoji}  **|** ${content}`)
-                    .then(message => setTimeout(() => {
-                        message.delete().catch(() => { });
-                    }, del));
-            } else {
-                return msg.channel.send(`${this.errorEmoji}  **|** ${content}`);
-            }
-        }
-    }
-
-    /**
-     * Send a message in a channel
-     * @param {TextChannel|DMChannel|NewsChannel|Snowflake} channel - The channel to send the message in
-     * @param {String} content - The content you want to send
-     * @param {Object} [options] - The channel message options
-     * @param {EmojiIdentifierResolvable[]} [options.react] - The emoji(s) that should be added as reactions
-     * @returns {Promise<Message>}
-     */
-    async msgChannel(channel, content, options) {
-        if (!(channel instanceof Discord.Channel)) {
-            try {
-                const id = channel.match(/[0-9]+/)[0];
-                if (id) channel = this.client.channels.resolve(id);
-            } catch (err) {
-                return;
-            }
-        }
-
+    msgChannel(channel, payload, options) {
+        channel = `${channel}`.match(/[0-9]+/)?.[0];
         if (channel) {
-            const message = await channel.send(content);
-
-            // Add reactions if there is any
-            if (options && options.react) {
-                for (let i in options.react) {
-                    await message.react(options.react[i]);
-                }
-            }
-            return message;
-        } else {
-            return;
+            this.client.channels.fetch(channel).then(channel => {
+                return this._sendMsg(channel, payload, options);
+            })
         }
     }
-
 
     /**
-     * Send a message to a user
-     * @param {User|Snowflake} user - The user you want to dm
-     * @param {String} content - The content you want to send
-     * @returns {Promise<Message>}
+     * Send a dm to a user
+     * @param {User|Snowflake} user - The original message or interaction
+     * @param {String|MessagePayload|MessageOptions} payload - The payload you want to send
+     * @param {SenderMessageOptions} [options] - The sender options
+     * @returns {Promise<Message|void>}
      */
-    async msgUser(user, content) {
-        if (!(user instanceof Discord.User)) {
-            try {
-                const id = user.match(/[0-9]+/);
-                if (id) user = await this.client.users.fetch(id);
-            } catch (err) {
-                return;
-            }
-        }
-
+    async msgUser(user, payload, options) {
+        user = `${user}`.match(/[0-9]+/)?.[0];
         if (user) {
-            try {
-                return user.send(content);
-            } catch (err) {
-                return;
-            }
-        } else {
-            return;
+            this.client.users.fetch(user).then(user => {
+                return user;
+            }).catch(() => {});
         }
     }
 
+    /**
+     * Send a message to a channel
+     * @param {TextBasedChannels} channel - The channel to send the message in
+     * @param {String|MessagePayload|MessageOptions} payload - The payload you want to send
+     * @param {SenderMessageOptions} [options] - The sender options
+     * @returns {Promise<Message>}
+     * @private
+     */
+    _sendMsg(channel, payload, options) {
+        // No options shortcut
+        if (!options) return channel.send(payload);
+
+        // Handle the bot message type
+        if (options.msgType) {
+            // Cancel message type reply if there is a embed
+            if (payload.embeds) throw new Error("you can't provide a embed together with a msgType");
+
+            // Create and set the embed
+            const embed = new Discord.MessageEmbed()
+                .setColor(this.config.msgTypes[options.msgType].color);
+
+            if (typeof payload === "string") {
+                embed.setDescription(`${this.config.msgTypes[options.msgType].emoji} **${payload}**`);
+                payload = { embeds: [embed] };
+            } else {
+                embed.setDescription(`${this.config.msgTypes[options.msgType].emoji} **${payload.content}**`);
+                delete payload.content;
+                payload.embeds = [embed];
+            }
+        }
+
+        // Send the message
+        return channel.send(payload)
+            .then(msg => {
+                // Message delete timeout
+                if (options.delTime) setTimeout(() => msg.delete().catch(() => { }), options.delTime);
+            });
+    }
 }
 
 module.exports = Sender;
 
 /**
- * @typedef {import("../Bot")} Client
- * @typedef {import("discord.js").User} User
+ * @typedef {Object} SenderMessageOptions
+ * @property {Number} [delTime] - The delay before deleting the message in milliseconds
+ * @property {"success"|"invalid"|"error"|"time"} [msgType] - The bot message type to reply with (Doesn't support a embed in the payload)
+ */
+
+/**
+ * @typedef {Object} SenderReplyOptions
+ * @property {Number} [delTime] - The delay before deleting the message in milliseconds
+ * @property {"success"|"invalid"|"error"|"time"} [msgType] - The bot message type to reply with (Doesn't support a embed in the payload)
+ * @property {Boolean} [editReply=false] - Edit the already existing reply (Only works if the interaction already has a reply)
+ */
+
+
+/**
  * @typedef {import("discord.js").Message} Message
- * @typedef {import("discord.js").DMChannel} DMChannel
+ * @typedef {import("discord.js").message}
  * @typedef {import("discord.js").Snowflake} Snowflake
- * @typedef {import("discord.js").TextChannel} TextChannel
- * @typedef {import("discord.js").NewsChannel} NewsChannel
- * @typedef {import("discord.js").EmojiResolvable} EmojiResolvable
- * @typedef {import("discord.js").EmojiIdentifierResolvable} EmojiIdentifierResolvable
+ * @typedef {import("discord.js").Interaction} Interaction
+ * @typedef {import("discord.js").MessagePayload} MessagePayload
+ * @typedef {import("discord.js").MessageOptions} MessageOptions
+ * @typedef {import("discord.js").TextBasedChannels} TextBasedChannels
+ * @typedef {import("discord.js").InteractionReplyOptions} InteractionReplyOptions
  */

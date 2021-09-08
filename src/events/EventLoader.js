@@ -22,10 +22,9 @@ class CommandLoader {
         this.config = client.config;
 
         /**
-         * All the currenty loaded commands
+         * All the currently loaded events
          */
         this.events = {};
-        this.categories = {};
 
         /**
          * The path to the commands folder
@@ -35,30 +34,31 @@ class CommandLoader {
 
     /**
      * Load all the commands that are available
+     * @returns {void}
      */
     async loadAll() {
-        // Get all the categories
-        const categories = await fs.readdir(this.path);
-        for (const category of categories) {
+        // Get all the folders
+        const folders = await fs.readdir(this.path);
+        for (const folder of folders) {
             // Load the events if it's a folder
-            if ((await fs.lstat(this.path + category)).isDirectory()) {
-                this.categories[category] = [];
-                const files = await fs.readdir(this.path + category);
+            if ((await fs.lstat(this.path + folder)).isDirectory()) {
+                const files = await fs.readdir(this.path + folder);
                 // Go through all the event files
                 for (const file of files) {
                     if (file.endsWith(".js")) {
-                        const Event = require(path.join(__dirname, `${category}/${file}`));
-                        if (Event.prototype instanceof BaseEvent) {
-                            const event = new Event();
-                            this.client.on(event.name, event.run.bind(event))
-                            this.categories[category].push(event.name);
+                        // Load the event
+                        try {
+                            const Event = require(path.join(__dirname, `${folder}/${file}`));
+                            if (Event.prototype instanceof BaseEvent) {
+                                const event = new Event();
+                                this.client.on(event.name, event.run.bind(event))
+                                this.events[event.name] = event;
+                            }
+                        } catch (err) {
+                            this.logger.error(`Error while trying to load a event eventFile: ${file}`, err);
                         }
                     }
                 }
-            }
-            // If the category has no events remove it
-            if (this.categories[category] == {}) {
-                delete this.categories[category];
             }
         }
     }

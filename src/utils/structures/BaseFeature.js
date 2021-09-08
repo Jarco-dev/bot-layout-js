@@ -5,6 +5,7 @@
 class BaseFeature {
     /**
      * Constructor
+     * @param {String} name - The name of the event
      */
     constructor(name) {
         // Feature parameters
@@ -13,12 +14,11 @@ class BaseFeature {
         // Client parameters
         this.client = require("../../Bot");
         this.db = this.client.db;
+        this.sConfig = this.client.sConfig;
         this.config = this.client.config;
-        this.version = this.client.version;
         this.logger = this.client.logger;
-        this.global = this.client.global;
         this.sender = this.client.sender;
-        this.ReactionCollector = this.client.reactionCollector;
+        this.global = this.client.global;
     }
 }
 

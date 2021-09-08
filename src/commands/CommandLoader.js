@@ -22,11 +22,9 @@ class CommandLoader {
         this.config = client.config;
 
         /**
-         * All the currenty loaded commands
+         * All currently loaded commands
          */
         this.commands = {};
-        this.commandAliases = {};
-        this.categories = {};
 
         /**
          * The path to the commands folder
@@ -36,38 +34,63 @@ class CommandLoader {
 
     /**
      * Load all the commands that are available
+     * @returns {void}
      */
     async loadAll() {
-        // Get all the categories
-        const categories = await fs.readdir(this.path);
-        for (const category of categories) {
+        // Get all the folders
+        const folders = await fs.readdir(this.path);
+        for (const folder of folders) {
             // Load the commands if it's a folder
-            if ((await fs.lstat(this.path + category)).isDirectory()) {
-                this.categories[category] = [];
-                const files = await fs.readdir(this.path + category);
-                // Go through all the command files
+            if ((await fs.lstat(this.path + folder)).isDirectory()) {
+                const files = await fs.readdir(this.path + folder);
+                // Go through all the command files in the folder and load them
                 for (const file of files) {
                     if (file.endsWith(".js")) {
-                        const Command = require(path.join(__dirname, `${category}/${file}`));
-                        if (Command.prototype instanceof BaseCommand) {
-                            try {
-                                const command = new Command();
-                                this.commands[command.name] = command;
-                                this.categories[category].push(command.name);
-                                command.aliases.forEach(alias => this.commandAliases[alias] = command.name);
+                        // Load the command
+                        try {
+                            const Command = require(path.join(__dirname, `${folder}/${file}`));
+                            if (Command.prototype instanceof BaseCommand) {
+                                try {
+                                    const command = new Command();
+                                    this.commands[command.name] = command;
+                                } catch (err) {
+                                    this.logger.error(err);
+                                }
                             }
-                            catch (err) {
-                                this.logger.error(err);
-                            }
+                        } catch (err) {
+                            this.logger.error(`Error while trying to load a command commandFile: ${file}`, err);
                         }
                     }
                 }
             }
-            // If the category has no commands remove it
-            if (this.categories[category] == {}) {
-                delete this.categories[category];
-            }
         }
+    }
+
+    /**
+     * Create and or update all the commands with the "enabled" status
+     * @param {"enabled"|"dev"|"all"} status - What should the status of the command be for it to be updated
+     * @param {Snowflake} [guildId] - The id of the guild to update the commands in (none = global)
+     * @returns {void}
+     */
+    async updateCommands(status, guildId) {
+        if (!["enabled", "dev", "all"].includes(status)) throw new Error("status is a invalid value");
+        await this.client.application.fetch();
+        const data = [];
+        for (let command in this.commands) {
+            command = this.commands[command];
+            if ((status !== "all" && command.status !== status) || command.status === "disabled") continue;
+            data.push({
+                name: command.name,
+                description: command.description,
+                type: command.type,
+                options: command.options,
+                defaultPermission: command.defaultPermission
+            });
+        }
+
+        this.client.application.commands.set(data, guildId)
+            .then(commands => this.logger.info(`Updated ${commands.size} application command(s) status: ${status}${(guildId) ? ` guildId: ${guildId}` : ""}`))
+            .catch(err => this.logger.error(`Error while updating application command(s) status: ${status} guildId: ${guildId}`, err));
     }
 }
 

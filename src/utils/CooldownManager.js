@@ -1,8 +1,8 @@
 /**
- * Cooldown
+ * CooldownManager
  * The class that handles with command cooldowns
  */
-class Cooldown {
+class CooldownManager {
     /**
      * Constructor
      * @param {Client} client - The client instance
@@ -17,27 +17,30 @@ class Cooldown {
         /** @private */
         this.sender = client.sender;
 
-        /** @private */
-        this.timeEmoji = client.config.emoji.time;
-
+        /**
+         * All the currently active cooldowns
+         */
         this.cooldown = {};
     }
 
     /**
      * Check if the user is on cooldown or not
-     * @param {Message} msg - The initiating message
+     * @param {CommandInteraction} i - The command interaction
      * @param {Command} command - The requested command
      * @return {Boolean}
      */
-    check(msg, command) {
-        const key = `${command.name}_${msg.author.id}`;
+    check(i, command) {
+        const key = `${command.name}_${i.user.id}`;
 
         if (this.cooldown[key]) {
-            let channelPerms = (msg.guild) ? msg.channel.permissionsFor(this.client.user.id) : "NotInGuild";
-            if (channelPerms.has("VIEW_CHANNEL") && channelPerms.has("SEND_MESSAGES")) {
+            let channelPerms = (i.inGuild()) ? i.channel.permissionsFor(this.client.user.id) : "NotInGuild";
+            if (!i.inGuild() || (channelPerms.has("VIEW_CHANNEL") && channelPerms.has("SEND_MESSAGES") && channelPerms.has("EMBED_LINKS"))) {
                 const diff = this.cooldown[key] - Date.now();
-                const timeleft = (diff / 1000).toFixed(1);
-                this.sender.reply(msg, this.timeEmoji, `Please wait ${timeleft}s and try again`, diff);
+                const timeLeft = (diff / 1000).toFixed(1);
+                this.sender.reply(i, `Please wait ${timeLeft}s and try again`, {
+                    delTime: diff,
+                    msgType: "time"
+                });
             }
             return true;
         } else {
@@ -48,10 +51,11 @@ class Cooldown {
     }
 }
 
-module.exports = Cooldown;
+module.exports = CooldownManager;
 
 /**
  * @typedef {import("../Bot")} Client
  * @typedef {import("discord.js").Message} Message
  * @typedef {import("./structures/BaseCommand")} Command
+ * @typedef {import("discord.js").CommandInteraction} CommandInteraction
  */
