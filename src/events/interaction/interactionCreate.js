@@ -3,10 +3,7 @@ const BaseEvent = require("../../utils/structures/BaseEvent");
 class InteractionCreateEvent extends BaseEvent {
     constructor() {
         super("interactionCreate");
-
-        /** @private */
-        this.logger = this.client.logger;
-
+        
         /** @private */
         this.commands = this.client.commandLoader.commands;
 
