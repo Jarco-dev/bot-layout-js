@@ -83,7 +83,7 @@ class Sender {
     async msgChannel(channel, payload, options) {
         channel = `${channel}`.match(/[0-9]+/)?.[0];
         if (channel) {
-            const channel = await this.client.channels.fetch(channel).catch(() => { });
+            channel = await this.client.channels.fetch(channel).catch(() => { });
             if (channel) return this._sendMsg(channel, payload, options);
         }
     }
@@ -98,7 +98,7 @@ class Sender {
     async msgUser(user, payload, options) {
         user = `${user}`.match(/[0-9]+/)?.[0];
         if (user) {
-            const user = await this.client.users.fetch(user).catch(() => { });
+            user = await this.client.users.fetch(user).catch(() => { });
             if (user) return this._sendMsg(await user.createDM(), payload, options);
         }
     }
