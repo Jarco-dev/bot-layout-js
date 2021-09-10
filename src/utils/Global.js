@@ -153,7 +153,7 @@ class Global {
      * Check a list of permissions for the bot and return a boolean
      * @param {Channel} channel - The channel to check in
      * @param {PermissionResolvable[]} permissions - The array of permission flags to check
-     * @param {TextBasedChannel} [notifChan] - The channel to notify missing permissions in
+     * @param {TextBasedChannels} [notifChan] - The channel to notify missing permissions in
      * @returns {Boolean}
      */
     async hasPermissions(channel, permissions, notifChan) {
@@ -174,7 +174,7 @@ class Global {
     /**
      * Check whether a list of roles is manageable by the bot
      * @param {Role[]} roles - The array of roles to check
-     * @param {TextBasedChannel} notifChan - The channel to notify missing permissions in
+     * @param {TextBasedChannels} notifChan - The channel to notify missing permissions in
      * @returns {Boolean}
      */
     async canManageRoles(roles, notifChan) {
@@ -221,7 +221,7 @@ module.exports = Global;
  * @typedef {import("discord.js").Snowflake} Snowflake
  * @typedef {import("discord.js").MessageEmbed} MessageEmbed
  * @typedef {import("discord.js").MessageButton} MessageButton
- * @typedef {import("discord.js").TextBasedChannel} TextBasedChannel
+ * @typedef {import("discord.js").TextBasedChannels} TextBasedChannels
  * @typedef {import("discord.js").MessageActionRow} MessageActionRow
  * @typedef {import("discord.js").MessageSelectMenu} MessageSelectMenu
  * @typedef {import("discord.js").PermissionResolvable} PermissionResolvable

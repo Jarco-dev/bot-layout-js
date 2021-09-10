@@ -80,12 +80,11 @@ class Sender {
      * @param {SenderMessageOptions} [options] - The sender options
      * @returns {Promise<Message|void>}
      */
-    msgChannel(channel, payload, options) {
+    async msgChannel(channel, payload, options) {
         channel = `${channel}`.match(/[0-9]+/)?.[0];
         if (channel) {
-            this.client.channels.fetch(channel).then(channel => {
-                return this._sendMsg(channel, payload, options);
-            })
+            channel = await this.client.channels.fetch(channel).catch(() => { });
+            if (channel) return this._sendMsg(channel, payload, options);
         }
     }
 
@@ -99,9 +98,8 @@ class Sender {
     async msgUser(user, payload, options) {
         user = `${user}`.match(/[0-9]+/)?.[0];
         if (user) {
-            this.client.users.fetch(user).then(user => {
-                return user;
-            }).catch(() => {});
+            user = await this.client.users.fetch(user).catch(() => { });
+            if (user) return this._sendMsg(await user.createDM(), payload, options);
         }
     }
 

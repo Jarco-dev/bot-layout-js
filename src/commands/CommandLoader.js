@@ -50,12 +50,8 @@ class CommandLoader {
                         try {
                             const Command = require(path.join(__dirname, `${folder}/${file}`));
                             if (Command.prototype instanceof BaseCommand) {
-                                try {
-                                    const command = new Command();
-                                    this.commands[command.name] = command;
-                                } catch (err) {
-                                    this.logger.error(err);
-                                }
+                                const command = new Command();
+                                this.commands[command.name] = command;
                             }
                         } catch (err) {
                             this.logger.error(`Error while trying to load a command commandFile: ${file}`, err);
@@ -90,7 +86,7 @@ class CommandLoader {
 
         this.client.application.commands.set(data, guildId)
             .then(commands => this.logger.info(`Updated ${commands.size} application command(s) status: ${status}${(guildId) ? ` guildId: ${guildId}` : ""}`))
-            .catch(err => this.logger.error(`Error while updating application command(s) status: ${status} guildId: ${guildId}`, err));
+            .catch(err => this.logger.error(`Error while updating application command(s) status: ${status}${(guildId) ? ` guildId: ${guildId}` : ""}`, err));
     }
 }
 
