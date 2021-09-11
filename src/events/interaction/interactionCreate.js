@@ -22,7 +22,7 @@ class InteractionCreateEvent extends BaseEvent {
             if (i.isCommand()) {
                 // Get the corresponding command
                 const command = this.commands[i.commandName];
-                if (!command) throw new Error(`The ${i?.commandName} could not be found`);
+                if (!command) throw new Error(`The ${i?.commandName} command could not be found`);
 
                 // Process command options
                 if (i.inGuild()) {
