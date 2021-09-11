@@ -11,7 +11,7 @@ class ReadyEvent extends BaseEvent {
      */
     run() {
         this.logger.info(`${this.client.user.tag} logged in`);
-        this.client.commandLoader.updateCommands(this.sConfig.commandLoadLevel, this.sConfig.commandDevGuild);
+        this.client.commandLoader.updateCommands(this.sConfig.commandLoadLevel, (this.sConfig.commandLoadLevel === "dev") ? this.sConfig.commandDevGuild : undefined);
         this.client.featureLoader.startAll();
     }
 }

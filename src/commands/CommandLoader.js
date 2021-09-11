@@ -87,8 +87,8 @@ class CommandLoader {
         }
 
         this.client.application.commands.set(data, guildId)
-            .then(commands => this.logger.info(`Updated ${commands.size} application command(s) status: ${status}${(guildId) ? ` guildId: ${guildId}` : "None"}`))
-            .catch(err => this.logger.error(`Error while updating application command(s) status: ${status}${(guildId) ? ` guildId: ${guildId}` : "None"}`, err));
+            .then(commands => this.logger.info(`Updated ${commands.size} application command(s) status: ${status} guild: ${(guildId) ? guildId : "None"}`))
+            .catch(err => this.logger.error(`Error while updating application command(s) status: ${status} guild: ${(guildId) ? guildId : "None"}`, err));
     }
 }
 
