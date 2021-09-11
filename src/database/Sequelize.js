@@ -20,6 +20,10 @@ class Sequelize {
         /** @private */
         this.logger = client.logger;
 
+        /**
+         * The database connection
+         * @type {Sequelize}
+         */
         this.con = new db.Sequelize(this.auth.mysql_database, this.auth.mysql_user, this.auth.mysql_password, {
             logging: (log) => this.logger.verbose(log),
             dialect: "mysql",

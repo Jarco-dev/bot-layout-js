@@ -58,7 +58,7 @@ module.exports = BaseCommand;
  * The status of the command
  * Enabled: Enable globally
  * Disable: Disable globally
- * Dev: Update the command on change in the dev server during every restart if the bot is in dev mode
+ * Dev: Enable in the development guild (secretConfig setting)
  * @typedef CommandStatus
  * @type {"enabled"|"disabled"|"dev"}
  */

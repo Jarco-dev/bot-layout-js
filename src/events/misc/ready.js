@@ -7,6 +7,7 @@ class ReadyEvent extends BaseEvent {
 
     /**
      * Run the event
+     * @returns {void}
      */
     run() {
         this.logger.info(`${this.client.user.tag} logged in`);

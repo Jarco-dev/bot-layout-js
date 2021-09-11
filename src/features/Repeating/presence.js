@@ -8,12 +8,16 @@ class PresenceFeature extends BaseFeature {
     constructor() {
         super("presence");
 
-        /** @type {NodeJS.Timeout|Number} */
+        /**
+         * The interval repeating the function
+         * @type {NodeJS.Timeout|Number}
+         */
         this.interval = undefined;
     }
 
     /**
      * Start the feature
+     * @returns {void}
      */
     start() {
         this._update();
@@ -29,15 +33,10 @@ class PresenceFeature extends BaseFeature {
         const members = this.client.guilds.cache.reduce((amount, guild) => amount + guild.memberCount, 0);
         this.client.user.setPresence({
             status: "online",
-            activities: [
-                {
-                    name: `${members} users`,
-                    type: "LISTENING"
-                }, {
-                    name: "test",
-                    type: "PLAYING"
-                }
-            ]
+            activities: [{
+                name: `${members} users`,
+                type: "LISTENING"
+            }]
         });
     }
 }

@@ -21,10 +21,8 @@ This bot has been coded for CLIENTS NAME
 
 # Installation
 
-* In `secrets/auth.js.example` fill in the authorisation details
-* Rename the file to `auth.js`
-* In `secrets/secretConfig.js` fill in the config values
-* Rename the file to `secretConfig.js`
+* In `secrets/` fill in the configs
+* Remove `.example` from all the files
 * In `src/data/config.js` fill in the config values to your liking
 * Open a terminal and navigate to the bots folder
 * Execute `npm i` and wait till it's done

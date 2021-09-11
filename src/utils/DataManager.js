@@ -38,7 +38,7 @@ class ExampleTable {
 
         /**
          * The example data cache mapped by the key
-         * @type {import("discord.js").Collection<String, ExampleData>}
+         * @type {Collection<String, ExampleData>}
          */
         this.cache = new Discord.Collection();
     }
@@ -104,4 +104,8 @@ module.exports = DataManager;
  * @typedef {Object} DataManagerFetchOptions
  * @property {Boolean} [cache=true] - Cache the fetched value?
  * @property {Boolean} [force=false] - Skip the cache and force fetch?
+ */
+
+/**
+ * @typedef {import("discord.js").Collection}
  */
