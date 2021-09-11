@@ -19,7 +19,7 @@ class Global {
         /** @private */
         this.config = client.config;
 
-        /** @Private */
+        /** @private */
         this.sender = client.sender;
     }
 

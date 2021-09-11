@@ -14,6 +14,7 @@ class InteractionCreateEvent extends BaseEvent {
     /**
      * Run the event
      * @param {Interaction} i - The interaction
+     * @returns {void}
      */
     run(i) {
         try {

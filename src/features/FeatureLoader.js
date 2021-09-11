@@ -23,11 +23,13 @@ class CommandLoader {
 
         /**
          * All the currently loaded features
+         * @type {Object}
          */
         this.features = {};
 
         /**
          * The path to the features folder
+         * @type {String}
          */
         this.path = "./src/features/"
     }

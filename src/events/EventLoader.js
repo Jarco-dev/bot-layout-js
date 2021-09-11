@@ -23,11 +23,13 @@ class CommandLoader {
 
         /**
          * All the currently loaded events
+         * @type {Object}
          */
         this.events = {};
 
         /**
          * The path to the commands folder
+         * @type {String}
          */
         this.path = "./src/events/"
     }

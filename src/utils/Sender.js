@@ -161,7 +161,6 @@ module.exports = Sender;
 
 /**
  * @typedef {import("discord.js").Message} Message
- * @typedef {import("discord.js").message}
  * @typedef {import("discord.js").Snowflake} Snowflake
  * @typedef {import("discord.js").Interaction} Interaction
  * @typedef {import("discord.js").MessagePayload} MessagePayload

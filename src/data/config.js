@@ -4,15 +4,15 @@ module.exports = {
 
     // Bot colors
     colors: {
-        default: "F88038"
+        default: "#F88038"
     },
 
     // Message type emojis and colors
     msgTypes: {
-        success: { emoji: "✅", color: "00FF00" },
-        invalid: { emoji: "❌", color: "ORANGE" },
-        error: { emoji: "⚠", color: "FF0000" },
-        time: { emoji: "⏱", color: "ORANGE" }
+        success: { emoji: "✅", color: "#00FF00" },
+        invalid: { emoji: "❌", color: "#E67E22" },
+        error: { emoji: "⚠", color: "#FF0000" },
+        time: { emoji: "⏱", color: "#E67E22" }
     },
 
     /**

@@ -2,7 +2,7 @@ const Discord = require("discord.js");
 
 /**
  * Client
- * The discord.js client
+ * The extended discord.js client
  */
 class Client extends Discord.Client {
     /**

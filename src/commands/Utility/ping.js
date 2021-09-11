@@ -12,11 +12,20 @@ class PingCommand extends BaseCommand {
             }],
             cooldown: 3000,
             botPermissions: ["VIEW_CHANNEL", "SEND_MESSAGES", "EMBED_LINKS"],
-            status: "enabled"
+            status: "dev"
         });
 
-        this.repeatEmoji = "🔁";
-        this.heartEmoji = "💟";
+        /**
+         * RTT emoji
+         * @type {String}
+         */
+        this.rttEmoji = "🔁";
+
+        /**
+         * Heartbeat emoji
+         * @type {string}
+         */
+        this.hbEmoji = "💟";
     }
 
     /**
@@ -24,7 +33,7 @@ class PingCommand extends BaseCommand {
      * @param {CommandInteraction} i - The command interaction
      */
     async run(i) {
-        // Subcommands
+        // Subcommand
         switch (i?.options?.getSubcommand(false)) {
 
             // Explain
@@ -32,26 +41,27 @@ class PingCommand extends BaseCommand {
                 const explainEmbed = this.global.embed()
                     .setTitle("Ping explanation")
                     .setDescription(`
-                        ${this.repeatEmoji} **RTT**: The delay between you sending the message and the bot replying
-                        ${this.heartEmoji} **Heartbeat**: The delay between the bot and the discord api servers
+                        ${this.rttEmoji} **RTT**: The delay between you sending the message and the bot replying
+                        ${this.hbEmoji} **Heartbeat**: The delay between the bot and the discord api servers
                     `);
                 this.sender.reply(i, { embeds: [explainEmbed] });
                 break;
             }
 
-            // Default command (ping the bot)
+            // No subcommand
             default: {
-                // Send a reply indication that we're pinging
-                const pingingEmbed = this.global.embed().setTitle("Pinging...");
-                const reply = await this.sender.reply(i, { embeds: [pingingEmbed], fetchReply: true });
+                // Send a pinging message
+                const pingingEmbed = this.global.embed()
+                    .setTitle("Pinging...");
+                const reply = await this.sende.reply(i, { embeds: [pingingEmbed], fetchReply: true });
 
                 // Calculate the delay and edit the reply
                 const timeDiff = reply.createdTimestamp - i.createdTimestamp;
                 const resultEmbed = this.global.embed()
                     .setTitle("Ping result")
                     .setDescription(`
-                        ${this.repeatEmoji} **RTT**: ${timeDiff}ms
-                        ${this.heartEmoji} **Heartbeat**: ${this.client.ws.ping}ms
+                        ${this.rttEmoji} **RTT**: ${timeDiff}ms
+                        ${this.hbEmoji} **Heartbeat**: ${this.client.ws.ping}ms
                     `);
                 this.sender.reply(i, { embeds: [resultEmbed] }, { editReply: true });
                 break;

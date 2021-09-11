@@ -23,11 +23,13 @@ class CommandLoader {
 
         /**
          * All currently loaded commands
+         * @type {Object}
          */
         this.commands = {};
 
         /**
          * The path to the commands folder
+         * @type {String}
          */
         this.path = "./src/commands/"
     }

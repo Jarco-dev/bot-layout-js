@@ -19,6 +19,7 @@ class CooldownManager {
 
         /**
          * All the currently active cooldowns
+         * @type {Object}
          */
         this.cooldown = {};
     }
