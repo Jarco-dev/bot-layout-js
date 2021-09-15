@@ -148,6 +148,19 @@ class Global {
         return result;
     }
 
+    /**
+     * Limit a string to a set length
+     * @param {String} string - The string to limit
+     * @param {Number} limit - The maximum length of the string
+     * @returns {String}
+     */
+    limitString(string, limit) {
+        if (string.length > limit) {
+            return string.substring(0, limit + 3) + "...";
+        } else {
+            return string;
+        }
+    }
 
     /**
      * Check a list of permissions for the bot and return a boolean
