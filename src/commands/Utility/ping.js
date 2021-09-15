@@ -6,13 +6,16 @@ class PingCommand extends BaseCommand {
             name: "ping",
             description: "View the bots response time",
             options: [{
-                type: "SUB_COMMAND",
-                name: "explain",
-                description: "Explains how the response time is established"
+                type: "STRING",
+                name: "action",
+                description: "Extra actions for the ping command",
+                choices: [{
+                    name: "Explain",
+                    value: "explain"
+                }]
             }],
             cooldown: 3000,
-            botPermissions: ["VIEW_CHANNEL", "SEND_MESSAGES", "EMBED_LINKS"],
-            status: "dev"
+            status: "enabled"
         });
 
         /**
@@ -33,8 +36,8 @@ class PingCommand extends BaseCommand {
      * @param {CommandInteraction} i - The command interaction
      */
     async run(i) {
-        // Subcommand
-        switch (i?.options?.getSubcommand(false)) {
+        // Ping action
+        switch (i?.options?.getString("action", false)) {
 
             // Explain
             case "explain": {
@@ -48,12 +51,12 @@ class PingCommand extends BaseCommand {
                 break;
             }
 
-            // No subcommand
+            // Ping (default)
             default: {
                 // Send a pinging message
                 const pingingEmbed = this.global.embed()
                     .setTitle("Pinging...");
-                const reply = await this.sende.reply(i, { embeds: [pingingEmbed], fetchReply: true });
+                const reply = await this.sender.reply(i, { embeds: [pingingEmbed], fetchReply: true });
 
                 // Calculate the delay and edit the reply
                 const timeDiff = reply.createdTimestamp - i.createdTimestamp;
@@ -63,8 +66,7 @@ class PingCommand extends BaseCommand {
                         ${this.rttEmoji} **RTT**: ${timeDiff}ms
                         ${this.hbEmoji} **Heartbeat**: ${this.client.ws.ping}ms
                     `);
-                this.sender.reply(i, { embeds: [resultEmbed] }, { editReply: true });
-                break;
+                this.sender.reply(i, { embeds: [resultEmbed] }, { method: "editReply" });
             }
         }
     }

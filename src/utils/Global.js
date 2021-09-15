@@ -148,46 +148,59 @@ class Global {
         return result;
     }
 
+    /**
+     * Limit a string to a set length
+     * @param {String} string - The string to limit
+     * @param {Number} limit - The maximum length of the string
+     * @returns {String}
+     */
+    limitString(string, limit) {
+        if (string.length > limit) {
+            return string.substring(0, limit + 3) + "...";
+        } else {
+            return string;
+        }
+    }
 
     /**
      * Check a list of permissions for the bot and return a boolean
-     * @param {Channel} channel - The channel to check in
+     * @param {GuildChannel} channel - The channel to check in
      * @param {PermissionResolvable[]} permissions - The array of permission flags to check
-     * @param {TextBasedChannels} [notifChan] - The channel to notify missing permissions in
+     * @param {TextBasedChannels|Interaction} [notifHere] - The channel or interaction for warning about missing permissions
      * @returns {Boolean}
      */
-    async hasPermissions(channel, permissions, notifChan) {
-        const perms = await channel.permissionsFor(this.client.user);
-        for (let i in permissions) {
-            if (!perms.has(permissions[i])) {
-                if (!notifChan) return false;
-                const notifChanPerms = await notifChan.permissionsFor(this.client.user);
-                if (notifChanPerms.has("VIEW_CHANNEL") && notifChanPerms.has("SEND_MESSAGES")) {
-                    this.sender.msgChannel(notifChan, `The bot doesn't have the \`${permissions[i]}\` permission in ${channel}, Please contact a server admin!`, { msgType: "invalid" });
-                }
-                return false;
+    hasPermissions(channel, permissions, notifHere) {
+        const perms = channel.permissionsFor(this.client.user);
+        permissions = permissions.filter(perm => !perms.has(perm));
+        if (permissions.length === 0) return true;
+        if (notifHere) {
+            const method = (notifHere.applicationId) ? "reply" : "msgChannel";
+            if (method === "msgChannel") {
+                const notifChanPerms = notifHere.permissionsFor(this.client.users);
+                if (!notifChanPerms.has("VIEW_CHANNEL") || !notifChanPerms.has("SEND_MESSAGES") || !notifChanPerms.has("EMBED_LINKS")) return false;
             }
+            this.sender[method](notifHere, `The bot is missing the \`${permissions.join("`, `")}\` permission(s) in ${channel}, Please contact a server admin!`, { msgType: "invalid" });
         }
-        return true;
+        return false;
     }
 
     /**
      * Check whether a list of roles is manageable by the bot
      * @param {Role[]} roles - The array of roles to check
-     * @param {TextBasedChannels} notifChan - The channel to notify missing permissions in
+     * @param {TextBasedChannels|Interaction} notifHere - The channel to notify missing permissions in
      * @returns {Boolean}
      */
-    async canManageRoles(roles, notifChan) {
+    async isAboveRoles(roles, notifHere) {
         roles = roles.filter(role => role.editable === false).sort((a, b) => b.position - a.position);
-        if (roles[0]) {
-            if (!notifChan) return false;
-            const notifChanPerms = await notifChan.permissionsFor(this.client.user);
-            if (notifChanPerms.has("VIEW_CHANNEL") && notifChanPerms.has("SEND_MESSAGES")) {
-                this.sender.msgChannel(notifChan, `The bot is too low in the role hierarchy to manage the \`${roles[0].name}\` role, Please contact a server admin`, { msgType: "invalid" });
+        if (roles.length === 0) return true;
+        if (notifHere) {
+            const method = (notifHere.applicationId) ? "reply" : "msgChannel";
+            if (method === "msgChannel") {
+                const notifChanPerms = notifHere.permissionsFor(this.client.users);
+                if (!notifChanPerms.has("VIEW_CHANNEL") || !notifChanPerms.has("SEND_MESSAGES") || !notifChanPerms.has("EMBED_LINKS")) return false;
             }
-            return false;
+            this.sender[method](notifHere, `The bot is too low in the role hierarchy to manage the \`${roles.join("`, `")}\` role(s), Please contact a server admin!`, { msgType: "invalid" });
         }
-        return true;
     }
 }
 
@@ -219,6 +232,8 @@ module.exports = Global;
  * @typedef {import("discord.js").Message} Member
  * @typedef {import("discord.js").Channel} Channel
  * @typedef {import("discord.js").Snowflake} Snowflake
+ * @typedef {import("discord.js").Interaction} Interaction
+ * @typedef {import("discord.js").GuildChannel} GuildChannel
  * @typedef {import("discord.js").MessageEmbed} MessageEmbed
  * @typedef {import("discord.js").MessageButton} MessageButton
  * @typedef {import("discord.js").TextBasedChannels} TextBasedChannels

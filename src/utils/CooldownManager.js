@@ -15,6 +15,9 @@ class CooldownManager {
         this.logger = client.logger;
 
         /** @private */
+        this.global = client.global;
+
+        /** @private */
         this.sender = client.sender;
 
         /**
@@ -37,11 +40,11 @@ class CooldownManager {
             let channelPerms = (i.inGuild()) ? i.channel.permissionsFor(this.client.user.id) : "NotInGuild";
             if (!i.inGuild() || (channelPerms.has("VIEW_CHANNEL") && channelPerms.has("SEND_MESSAGES") && channelPerms.has("EMBED_LINKS"))) {
                 const diff = this.cooldown[key] - Date.now();
-                const timeLeft = (diff / 1000).toFixed(1);
-                this.sender.reply(i, `Please wait ${timeLeft}s and try again`, {
-                    delTime: diff,
-                    msgType: "time"
-                });
+                const timeLeft = this.global.parseTime((diff >= 1000) ? diff : 1000);
+                this.sender.reply(i, {
+                    content: `Please wait \`${timeLeft}\` and try again`,
+                    ephemeral: true
+                }, { msgType: "time" });
             }
             return true;
         } else {
