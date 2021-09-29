@@ -107,5 +107,5 @@ module.exports = DataManager;
  */
 
 /**
- * @typedef {import("discord.js").Collection}
+ * @typedef {import("discord.js").Collection} Collection
  */
